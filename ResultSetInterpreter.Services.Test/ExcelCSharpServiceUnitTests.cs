@@ -1,11 +1,17 @@
 using ResultSetInterpreter.Services.Interfaces;
+using ResultSetIntrepreter.Services;
 
 namespace ResultSetInterpreter.Services.Test;
 
-public class EPPlusExcelToCSharpServiceUnitTests
+public class ExcelCSharpServiceUnitTests
 {
-    private readonly IExcelToCSharpService _excelToCSharpService = 
-        new ExcelCSharpService(new EPPlusExcelCSharpWorkbookParser());
+    private readonly IExcelToCSharpService _excelToCSharpService;
+    
+    public ExcelCSharpServiceUnitTests()
+    {
+        IExcelCSharpWorkbookParser parser = new EpPlusExcelCSharpWorkbookParser();
+        _excelToCSharpService = new ExcelCSharpService(parser);
+    }
 
     [Fact]
     public async Task ConvertUserTrackingSample_SuccessfulResult()

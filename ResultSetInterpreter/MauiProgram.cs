@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ResultSetInterpreter.Services;
 using ResultSetInterpreter.Services.Interfaces;
+using ResultSetIntrepreter.Services;
 
 namespace ResultSetInterpreter;
 
@@ -14,8 +15,9 @@ public static class MauiProgram
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
         builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
         builder.Services.AddScoped<IFilePickerService, MacOSFilePickerService>();
-        builder.Services.AddScoped<IExcelCSharpWorkbookParser, EPPlusExcelCSharpWorkbookParser>();
+        builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();
         builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
 
 #if DEBUG

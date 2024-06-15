@@ -1,21 +1,26 @@
 using System.Globalization;
 using System.Text;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using ResultSetInterpreter.Models.ExcelCSharp;
 using ResultSetInterpreter.Services.Interfaces;
-using ResultSetInterpreter.Services.Utilities;
 
-namespace ResultSetInterpreter.Services;
+namespace ResultSetIntrepreter.Services;
 
 public class ExcelCSharpService : IExcelToCSharpService
 {
+    #region Fields
+    
     private readonly IExcelCSharpWorkbookParser _excelCSharpWorkbookParser;
+    
+    #endregion
+    
+    #region Constructor
     
     public ExcelCSharpService(IExcelCSharpWorkbookParser excelCSharpWorkbookParser)
     {
         _excelCSharpWorkbookParser = excelCSharpWorkbookParser;
     }
+    
+    #endregion
     
     #region Public Methods
     public async Task<String> ConvertExcelToCSharpAsync(Stream excelStream)
@@ -89,7 +94,7 @@ public class ExcelCSharpService : IExcelToCSharpService
     {
         if (value.CSharpColumnNameType.Type == "System.DateTime?")
         {
-            codeBuilder.AppendLine($"       {value.CSharpColumnNameType.ColumnName} = DateTime.Parse(\"{ExcelCSharpUtility.ParseDateToString(value)}\", CultureInfo.InvariantCulture),");
+            codeBuilder.AppendLine($"       {value.CSharpColumnNameType.ColumnName} = DateTime.Parse(\"{ParseDate(value)}\", CultureInfo.InvariantCulture),");
         }
         else if (value.CSharpColumnNameType.Type == "System.Int32?")
         {
@@ -109,6 +114,13 @@ public class ExcelCSharpService : IExcelToCSharpService
     private bool IsDataInSheet(ExcelCSharpSheet sheet)
     {
         return sheet.Rows.Count > 2;
+    }
+    
+    private string ParseDate(ExcelCSharpValue value)
+    {
+        long num = long.Parse(value.Value?.ToString() ?? "0");
+        DateTime datetime = DateTime.FromOADate(num);
+        return datetime.ToString(CultureInfo.InvariantCulture);
     }
     
     #endregion

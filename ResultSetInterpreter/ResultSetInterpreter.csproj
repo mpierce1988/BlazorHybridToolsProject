@@ -67,7 +67,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ResultSetIntrepreter.Services\ResultSetIntrepreter.Services.csproj" />
+      <ProjectReference Include="..\ResultSetInterpreter.SharedComponents\ResultSetInterpreter.SharedComponents.csproj" />
+      <ProjectReference Include="..\ResultSetInterpreter.Services\ResultSetInterpreter.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Components\Pages\" />
+      <Folder Include="Services\Interfaces\" />
     </ItemGroup>
 
 </Project>
