@@ -15,7 +15,8 @@ public static class MauiProgram
 
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddScoped<IFilePickerService, MacOSFilePickerService>();
-        builder.Services.AddScoped<IExcelToCSharpService, EPPlusExcelToCSharpService>();
+        builder.Services.AddScoped<IExcelCSharpWorkbookParser, EPPlusExcelCSharpWorkbookParser>();
+        builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
