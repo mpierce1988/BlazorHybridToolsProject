@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetIntrepreter.Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services.Test", "ResultSetInterpreter.Services.Test\ResultSetInterpreter.Services.Test.csproj", "{9493E120-CCA8-46EB-B111-66DFC84B6C40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Models", "ResultSetInterpreter.Models\ResultSetInterpreter.Models.csproj", "{2D58264A-AA5B-496B-B4F3-F1CC45886018}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{9493E120-CCA8-46EB-B111-66DFC84B6C40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9493E120-CCA8-46EB-B111-66DFC84B6C40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9493E120-CCA8-46EB-B111-66DFC84B6C40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D58264A-AA5B-496B-B4F3-F1CC45886018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D58264A-AA5B-496B-B4F3-F1CC45886018}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D58264A-AA5B-496B-B4F3-F1CC45886018}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D58264A-AA5B-496B-B4F3-F1CC45886018}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
