@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MudBlazor.Services;
 using ResultSetInterpreter.Services;
 using ResultSetInterpreter.Services.Interfaces;
 using ResultSetIntrepreter.Services;
@@ -19,6 +20,8 @@ public static class MauiProgram
         builder.Services.AddScoped<IFilePickerService, MacOSFilePickerService>();
         builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();
         builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
+
+        builder.Services.AddMudServices();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();
