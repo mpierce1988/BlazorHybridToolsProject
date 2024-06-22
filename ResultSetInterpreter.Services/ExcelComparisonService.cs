@@ -24,20 +24,8 @@ public class ExcelComparisonService : IExcelComparisonService
         Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(testValue);
         
         // Validate the workbooks have the same number of sheets
-        if(controlWorkbook.Sheets.Count != testWorkbook.Sheets.Count)
-        {
-            throw new ArgumentException("Control and test workbooks must have the same number of sheets");
-        }
-        
-        // Validate the workbook sheets have the same names
-        for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
-        {
-            if (controlWorkbook.Sheets[i].Name != testWorkbook.Sheets[i].Name)
-            {
-                throw new ArgumentException("Control and test sheets must have the same names");
-            }
-        }
-        
+        EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
+
         // Create a new ExcelComparisonResult
         ExcelComparisionResult result = new();
         
@@ -53,25 +41,13 @@ public class ExcelComparisonService : IExcelComparisonService
                 continue;
             }
             
-            // Ensure the control and test sheets do not individually have null Cells
-            if (controlSheet.Cells == null || testSheet.Cells == null)
-            {
-                throw new ArgumentException("Control and test sheets must both contain cells");
-            }
-            
-            // Ensure the control and test sheets have the same number of rows and columns
-            if (controlSheet.Cells.GetLength(0) != testSheet.Cells.GetLength(0) || controlSheet.Cells.GetLength(1) != testSheet.Cells.GetLength(1))
-            {
-                throw new ArgumentException("Control and test sheets must have the same number of rows and columns");
-            }
-            
             // Compare the control and test cells
-            for (int j = 0; j < controlSheet.Cells.GetLength(0); j++)
+            for (int j = 0; j < controlSheet.Cells!.GetLength(0); j++)
             {
-                for (int k = 0; k < controlSheet.Cells.GetLength(1); k++)
+                for (int k = 0; k < controlSheet.Cells!.GetLength(1); k++)
                 {
                     object? currentControlValue = controlSheet.Cells[j, k];
-                    object? currentTestValue = testSheet.Cells[j, k];
+                    object? currentTestValue = testSheet.Cells![j, k];
                     
                     // If the control and test values are not equal, add the comparison to the result
                     if (!ObjectsAreEqual(currentControlValue, currentTestValue))
@@ -90,6 +66,52 @@ public class ExcelComparisonService : IExcelComparisonService
         }
 
         return result;
+    }
+
+    private void EnsureWorkbooksAreSimilar(Workbook controlWorkbook, Workbook testWorkbook)
+    {
+        if(controlWorkbook.Sheets.Count != testWorkbook.Sheets.Count)
+        {
+            throw new ArgumentException("Control and test workbooks must have the same number of sheets");
+        }
+
+        // Validate the workbook sheets are similar
+        for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
+        {
+            if (controlWorkbook.Sheets[i].Name != testWorkbook.Sheets[i].Name)
+            {
+                throw new ArgumentException("Control and test sheets must have the same names");
+            }
+            
+            // Validate the sheet cells are either both null, or both not null
+            if (controlWorkbook.Sheets[i].Cells == null && testWorkbook.Sheets[i].Cells == null)
+            {
+                // Go on to the next sheet
+                continue;
+            }
+
+            if (controlWorkbook.Sheets[i].Cells == null)
+            {
+                throw new Exception($"Control sheet ({controlWorkbook.Sheets[i].Name}) cells cannot be null if test sheet cells are not null");
+            }
+
+            if (testWorkbook.Sheets[i].Cells == null)
+            {
+                throw new Exception($"Test sheet ({testWorkbook.Sheets[i].Name})  cells cannot be null if control sheet cells are not null");
+            }
+            
+            // Validate the workbook sheets have the same number of rows
+            if (controlWorkbook.Sheets[i].Cells!.GetLength(0) != testWorkbook.Sheets[i].Cells!.GetLength(0))
+            {
+                throw new ArgumentException("Control and test sheets must have the same number of rows");
+            }
+            
+            // Validate the workbook sheets have the same number of columns
+            if (controlWorkbook.Sheets[i].Cells!.GetLength(1) != testWorkbook.Sheets[i].Cells!.GetLength(1))
+            {
+                throw new ArgumentException("Control and test sheets must have the same number of columns");
+            }
+        }
     }
 
     private bool ObjectsAreEqual(object? currentControlValue, object? currentTestValue)
