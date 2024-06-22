@@ -1,4 +1,3 @@
-using OfficeOpenXml;
 using ResultSetInterpreter.Services.Interfaces;
 
 namespace ResultSetIntrepreter.Services;
@@ -23,6 +22,21 @@ public class ExcelComparisonService : IExcelComparisonService
         // Parse the control and test files
         Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(controlValue);
         Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(testValue);
+        
+        // Validate the workbooks have the same number of sheets
+        if(controlWorkbook.Sheets.Count != testWorkbook.Sheets.Count)
+        {
+            throw new ArgumentException("Control and test workbooks must have the same number of sheets");
+        }
+        
+        // Validate the workbook sheets have the same names
+        for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
+        {
+            if (controlWorkbook.Sheets[i].Name != testWorkbook.Sheets[i].Name)
+            {
+                throw new ArgumentException("Control and test sheets must have the same names");
+            }
+        }
         
         // Create a new ExcelComparisonResult
         ExcelComparisionResult result = new();
@@ -60,7 +74,7 @@ public class ExcelComparisonService : IExcelComparisonService
                     object? currentTestValue = testSheet.Cells[j, k];
                     
                     // If the control and test values are not equal, add the comparison to the result
-                    if (ObjectsAreNotEqual(currentControlValue, currentTestValue))
+                    if (!ObjectsAreEqual(currentControlValue, currentTestValue))
                     {
                         result.Results.Add(new ExcelComparisonValue
                         {
@@ -78,25 +92,20 @@ public class ExcelComparisonService : IExcelComparisonService
         return result;
     }
 
-    private bool ObjectsAreNotEqual(object? currentControlValue, object? currentTestValue)
+    private bool ObjectsAreEqual(object? currentControlValue, object? currentTestValue)
     {
-        if (currentControlValue == null && currentTestValue != null)
+        if(currentControlValue == null && currentTestValue == null)
         {
-            return false;
+            return true;
         }
-
-        if (currentControlValue != null && currentTestValue == null)
+        
+        if(currentControlValue == null || currentTestValue == null)
         {
             return false;
         }
         
-        return !currentControlValue!.Equals(currentTestValue);
+        return currentControlValue.Equals(currentTestValue);
     }
-}
-
-public interface IExcelWorkbookParser
-{
-    public Task<Workbook> ParseExcel(Stream stream);
 }
 
 public class ExcelComparisonValue
@@ -118,46 +127,6 @@ public class ExcelComparisionRequest
 {
     public Stream ControlFile { get; set; }
     public Stream TestFile { get; set; }
-}
-
-public class ExcelWorkbookParser : IExcelWorkbookParser
-{
-    public async Task<Workbook> ParseExcel(Stream stream)
-    {
-        Workbook workbook = new();
-
-        using var package = new ExcelPackage(stream);
-        
-        foreach (var worksheet in package.Workbook.Worksheets)
-        {
-            // Ensure the worksheet is not empty
-            if (worksheet.Dimension.Columns == null && worksheet.Dimension.Rows == null)
-            {
-                continue;
-            }
-            
-            Sheet sheet = new()
-            {
-                Name = worksheet.Name
-            };
-            
-            object[,] cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
-            
-            for (int i = 1; i <= worksheet.Dimension.Rows; i++)
-            {
-                for (int j = 1; j <= worksheet.Dimension.Columns; j++)
-                {
-                    cells[i - 1, j - 1] = worksheet.Cells[i, j].Value;
-                }
-            }
-
-            sheet.Cells = cells;
-            
-            workbook.Sheets.Add(sheet);
-        }
-        
-        return workbook;
-    }
 }
 
 public class Workbook

@@ -16,6 +16,8 @@ public static class MauiProgram
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
         builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddScoped<IExcelWorkbookParser, EpPlusExcelWorkbookParser>();
+        builder.Services.AddScoped<IExcelComparisonService, ExcelComparisonService>();
         builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
         builder.Services.AddScoped<IFilePickerService, MacOSFilePickerService>();
         builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();

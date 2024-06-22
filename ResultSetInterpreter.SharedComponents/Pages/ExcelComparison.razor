@@ -1,0 +1,182 @@
+@page "/ExcelComparison"
+@using ResultSetInterpreter.Services.Interfaces
+@using ResultSetIntrepreter.Services
+
+<MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12">
+            <MudText Typo="Typo.h3" Align="Align.Center">Excel Comparison Tool</MudText>
+        </MudItem>
+        @if (_isLoading)
+        {
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Info">Loading...</MudAlert>
+            </MudItem>
+        }
+        @if (_error != null)
+        {
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Error">@(_error)</MudAlert>
+            </MudItem>
+        }
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h6">Selected Control File: @(_controlFileName ?? "No File Selected")</MudText>
+            @if (_controlFile == null)
+            {
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="PickControlFile">Pick Control File</MudButton>
+            }
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetControlFile">Reset Control File</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h6">Selected Test File: @(_testFileName ?? "No File Selected")</MudText>
+            @if (_testFile == null)
+            {
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="PickTestFile">Pick Test File</MudButton>
+            }
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetTestFile">Reset Test File</MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_controlFile == null || _testFile == null)">
+                Compare Files
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h5" Align="Align.Center">Results</MudText>
+            @if (_result == null)
+            {
+                <MudText Typo="Typo.body1" Align="Align.Center">No results, please run comparison</MudText>
+            }
+            else
+            {
+                @if (_result.IsValid)
+                {
+                    <MudText Typo="Typo.body1" Align="Align.Center">Excel files are identical!</MudText>
+                }
+                else
+                {
+                    <MudDataGrid Items="@_result.Results" SortMode="SortMode.None" Groupable="false">
+                        <Columns>
+                            <PropertyColumn Property="arg => arg.SheetName" Title="Sheet" />
+                            <PropertyColumn Property="arg => arg.ColumnLocation" Title="Column" />
+                            <PropertyColumn Property="arg => arg.RowLocation" Title="Row" />
+                            <PropertyColumn Property="arg => arg.ControlValue" Title="Control Value" />
+                            <PropertyColumn Property="arg => arg.TestValue" Title="Test Value"/>
+                        </Columns>
+                    </MudDataGrid>
+                }
+            }
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ResetAll">Reset All</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Inject] private IExcelComparisonService ComparisonService { get; set; } = default!;
+    [Inject] private IFilePickerService FilePicker { get; set; } = default!;
+
+    private Stream? _controlFile = null;
+    private string? _controlFileName = null;
+    private Stream? _testFile = null;
+    private string? _testFileName = null;
+
+    private ExcelComparisionResult? _result = null;
+
+    private bool _isLoading;
+    private string? _error = null;
+
+    private async Task PickControlFile()
+    {
+        try
+        {
+            _isLoading = true;
+            _error = null;
+            ResetControlFile();
+
+            (_controlFile, _controlFileName) = await FilePicker.PickFileAndNameAsync();
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            _error = e.Message;
+            _isLoading = false;
+        }
+    }
+
+    private void ResetControlFile()
+    {
+        _controlFile = null;
+        _controlFileName = null;
+    }
+
+    private async Task PickTestFile()
+    {
+        try
+        {
+            _isLoading = true;
+            _error = null;
+            ResetTestFile();
+
+            (_testFile, _testFileName) = await FilePicker.PickFileAndNameAsync();
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            _error = e.Message;
+            _isLoading = false;
+        }
+    }
+
+    private void ResetTestFile()
+    {
+        _testFile = null;
+        _testFileName = null;
+    }
+
+    private async Task CompareFiles()
+    {
+        try
+        {
+            _isLoading = true;
+            _error = null;
+            _result = null;
+
+            if (_controlFile == null)
+            {
+                _error = "Control file is required";
+            }
+            else if (_testFile == null)
+            {
+                _error = "Test file is required";
+            }
+
+            if (_error != null)
+            {
+                _isLoading = false;
+                return;
+            }
+            
+            _result = await ComparisonService.CompareExcelFilesAsync(_controlFile!, _testFile!);
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            _error = e.Message;
+            _isLoading = false;
+        }
+    }
+
+    private void ResetAll()
+    {
+        _error = null;
+        _result = null;
+        _isLoading = false;
+        ResetControlFile();
+        ResetTestFile();
+    }
+
+}
