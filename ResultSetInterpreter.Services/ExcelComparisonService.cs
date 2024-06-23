@@ -1,3 +1,4 @@
+using ResultSetInterpreter.Models.Workbook;
 using ResultSetInterpreter.Services.Interfaces;
 
 namespace ResultSetIntrepreter.Services;
@@ -128,39 +129,4 @@ public class ExcelComparisonService : IExcelComparisonService
         
         return currentControlValue.Equals(currentTestValue);
     }
-}
-
-public class ExcelComparisonValue
-{
-    public string SheetName { get; set; } = string.Empty;
-    public string RowLocation { get; set; } = string.Empty;
-    public string ColumnLocation { get; set; } = string.Empty;
-    public object? ControlValue { get; set; }
-    public object? TestValue { get; set; }
-}
-
-public class ExcelComparisionResult
-{
-    public List<ExcelComparisonValue> Results { get; set; } = new();
-    public bool IsValid => Results.Count == 0;
-}
-
-public class ExcelComparisionRequest
-{
-    public Stream ControlFile { get; set; }
-    public Stream TestFile { get; set; }
-}
-
-public class Workbook
-{
-    public List<Sheet> Sheets { get; set; } = new();
-}
-
-public class Sheet
-{
-    // Create a property to represent the sheet name
-    public string? Name { get; set; }
-    
-    // Create a property to represent the sheet cells
-    public object?[,]? Cells { get; set; }
 }
