@@ -1,5 +1,5 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=266777d4_002D2d04_002D410e_002Db400_002D0c4f5b1279c6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ReceiveExcelStream_CorrectlyParsedResult #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=266777d4_002D2d04_002D410e_002Db400_002D0c4f5b1279c6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ReceiveExcelStream_CorrectlyParsedResult #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;Project Location="/Users/michaelpierce/Documents/Coding Projects/ResultSetToC#/src/ResultSetInterpreter/ResultSetInterpreter.Services.Test" Presentation="&amp;lt;ResultSetInterpreter.Services.Test&amp;gt;" /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4274b976_002Dc4d3_002D42c7_002D9541_002D1152f7f8445f/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ReceiveExcelStream_CorrectlyParsedResult" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
@@ -15,6 +15,17 @@
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.IterationsGreaterThan50_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.MethodNotProvided_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.EPPlusExcelCSharpWorkbookoParserUnitTests.ReceiveExcelStream_CorrectlyParsedResult&lt;/TestId&gt;
+  &lt;/TestAncestor&gt;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a36093d2_002Ddcb8_002D44ac_002Da448_002D3384e26be1aa/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ParseInsertStatementAsync_InsertOneRowOneColumn_ReturnsCorrectData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
+  &lt;TestAncestor&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests.ParseInsertStatementAsync_InsertOneRowOneColumn_ReturnsCorrectData&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests.ParseInsertStatementAsync_InsertOneRowTwoColumns_ReturnsCorrectData&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectDefinitionPrinterUnitTests.ClassDefinitionToCSharpCodeAsync_ObjectDefinitionWithName_ReturnsCorrectName&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectDefinitionPrinterUnitTests.ClassDefinitionToCSharpCodeAsync_ObjectDefinitionWithOneProperty_ReturnsProperty&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectDefinitionPrinterUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests.ObjectDefinitionToCSharpCode_WhenCalledWithClassDefinitionAndData_ReturnsCSharpCode&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>
