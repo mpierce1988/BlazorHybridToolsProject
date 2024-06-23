@@ -129,4 +129,80 @@ VALUES
         Assert.Equal(nameValue, definition.Objects[0][nameProperty]);
         
     }
+
+    [Fact]
+    public async Task ParseInsertStatementAsync_ThreeColumnsThreeRows_ReturnsCorrectResult()
+    {
+        // Arrange
+
+        string createAndInsertStatement = @"CREATE TABLE #Users (
+    UserID INT,
+    UserName NVARCHAR(100),
+    Email NVARCHAR(100)
+);
+
+-- Inserting mock data into the #Users table
+INSERT INTO #Users (UserID, UserName, Email) VALUES
+(1, 'JohnDoe', 'john.doe@example.com'),
+(2, 'JaneSmith', 'jane.smith@example.com'),
+(3, 'MikeBrown', 'mike.brown@example.com');";
+
+        Property UserIdProperty = new Property
+        {
+            Name = "UserID",
+            Type = typeof(int)
+        };
+
+        Property UserNameProperty = new Property
+        {
+            Name = "UserName",
+            Type = typeof(string)
+        };
+
+        Property UserEmailProperty = new Property
+        {
+            Name = "Email",
+            Type = typeof(string)
+        };
+
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "Users",
+            Properties = new()
+            {
+                UserIdProperty,
+                UserNameProperty,
+                UserEmailProperty
+            },
+            Objects = new()
+            {
+                new()
+                {
+                    {UserIdProperty, "1"},
+                    {UserNameProperty, "JohnDoe"},
+                    {UserEmailProperty, "john.doe@example.com"}
+                },
+                new()
+                {
+                    {UserIdProperty, "2"},
+                    {UserNameProperty, "JaneSmith"},
+                    {UserEmailProperty, "jane.smith@example.com"}
+                },
+                new ()
+                {
+                    {UserIdProperty, "3"},
+                    {UserNameProperty, "MikeBrown"},
+                    {UserEmailProperty, "mike.brown@example.com"}
+                }
+            }
+        };
+        
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createAndInsertStatement);
+        
+        // Assert
+        string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
+        string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
+        Assert.Equal(expectedJson, actualJson);
+    }
 }

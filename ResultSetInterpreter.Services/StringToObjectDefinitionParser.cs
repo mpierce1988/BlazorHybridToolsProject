@@ -38,8 +38,7 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
 
         if (insertMatch.Success)
         {
-            // Create a dictionary to hold the property and the value
-            OrderedDictionary propertyValues = new();
+            
             
             // Get the columns to determine the order of the values
             string columnsText = insertMatch.Groups["columns"].Value.Trim();
@@ -64,18 +63,33 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
             
             // Get the values string
             string valuesString = insertMatch.Groups["values"].Value.Trim();
-            // Split the values by comma
-            string[] values = valuesString.Split(',');
             
-            // Loop through each ordered property, and grab the corresponding value
-            for (int i = 0; i < orderedProperties.Count; i++)
+            // Split the values by "), (" to get each item
+            string[] items = valuesString.Split("), (");
+            
+            // Loop through each item
+            foreach (string item in items)
             {
-                Property prop = orderedProperties[i];
-                string? value = values[i].Trim();
-                propertyValues.Add(prop, value);
+                // Create a dictionary to hold the property and the value
+                OrderedDictionary propertyValues = new();
+                
+                // Split the values by comma
+                string[] values = item.Split(',');
+            
+                // Loop through each ordered property, and grab the corresponding value
+                for (int i = 0; i < orderedProperties.Count; i++)
+                {
+                    Property prop = orderedProperties[i];
+                    string? value = values[i].Trim();
+                    // Remove leading and trailing apostrophes
+                    value = value.Trim('\'');
+                    propertyValues.Add(prop, value);
+                }
+            
+                result.Objects.Add(propertyValues);
             }
             
-            result.Objects.Add(propertyValues);
+            
         }
         
         return result;

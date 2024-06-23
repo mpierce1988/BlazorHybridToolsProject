@@ -1,0 +1,100 @@
+@page "/InsertStatementConverter"
+@using ResultSetIntrepreter.Services.Interfaces
+@using ResultSetIntrepreter.Services
+@using ResultSetInterpreter.Models.ObjectDefinition
+
+<MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12">
+            @if (_error != null)
+            {
+                <MudAlert Severity="Severity.Error">@_error</MudAlert>
+            }
+            
+            @if (_isLoading)
+            {
+                <MudAlert Severity="Severity.Info">Loading...</MudAlert>
+            }
+            <MudText Typo="Typo.h3" Align="Align.Center">Insert Statement Converter</MudText>
+            <MudText Typo="Typo.h5" Align="Align.Center">Converts a SQL Server Insert Statement with Temp Table declaration into C# Code</MudText>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudSelect @bind-Value="_request.PrintType" Label="Select Print Type">
+                <MudSelectItem Value="@(ObjectDefinitionPrintType.ClassDefinitionAndData)">
+                    Class Definition and Data
+                </MudSelectItem>
+                <MudSelectItem Value="@(ObjectDefinitionPrintType.ClassDefinition)">
+                    Class Definition Only
+                </MudSelectItem>
+                <MudSelectItem Value="@(ObjectDefinitionPrintType.Data)">
+                    Data Only
+                </MudSelectItem>
+            </MudSelect>
+            <MudCheckBox @bind-Value="_autoGrowTextBox">Auto Grow Text Boxes</MudCheckBox>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="ConvertStatement"
+                       Disabled="@(string.IsNullOrWhiteSpace(_request.InsertStatement))">
+                Convert
+            </MudButton>
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ResetAll">
+                Reset
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudTextField T="string" Label="Insert Statement" @bind-Value="@_request.InsertStatement" Lines="5" 
+                          Variant="Variant.Outlined" AutoGrow="_autoGrowTextBox" />
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudTextField T="string" Label="C# Code Result" Text="@(_response != null ? _response.CSharpCode : "No Result")" Lines="5" Variant="Variant.Outlined" Disabled="@(_response == null)" AutoGrow="_autoGrowTextBox"/>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Inject] private IObjectParserService ObjectParser { get; set; } = default!;
+
+    private ParseInsertStatementToCSharpRequest _request = new();
+    private ParseInsertStatementToCSharpResponse? _response = null;
+
+    private bool _autoGrowTextBox = true;
+
+    private bool _isLoading;
+    private string? _error = null;
+
+    private async Task ConvertStatement()
+    {
+        _isLoading = true;
+        _error = null;
+        _response = null;
+        
+        try
+        {
+            // Validate there is submission text
+            if (string.IsNullOrWhiteSpace(_request.InsertStatement))
+            {
+                _error = "Please enter a SQL Server Insert Statement with Temp Table declaration";
+                _isLoading = false;
+                return;
+            }
+            
+            _response = await ObjectParser.ParseInsertStatementToCSharpAsync(_request);
+        }
+        catch (Exception e)
+        {
+            _error = e.Message;
+        }
+
+        _isLoading = false;
+    }
+
+    private void ResetAll()
+    {
+        _isLoading = false;
+        _error = null;
+        _request = new();
+        _response = null;
+        StateHasChanged();
+    }
+
+}
