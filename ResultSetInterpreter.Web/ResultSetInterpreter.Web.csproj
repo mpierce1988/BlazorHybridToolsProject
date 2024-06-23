@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ResultSetInterpreter.Models\ResultSetInterpreter.Models.csproj" />
+      <ProjectReference Include="..\ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj" />
       <ProjectReference Include="..\ResultSetInterpreter.Services\ResultSetInterpreter.Services.csproj" />
       <ProjectReference Include="..\ResultSetInterpreter.SharedComponents\ResultSetInterpreter.SharedComponents.csproj" />
     </ItemGroup>

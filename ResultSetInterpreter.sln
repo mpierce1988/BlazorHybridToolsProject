@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Shared
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Web", "ResultSetInterpreter.Web\ResultSetInterpreter.Web.csproj", "{212B30DC-01C1-4B26-A9EE-2102B181770A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services.EpPlus", "ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj", "{3053B806-4E1F-499C-9AED-4238711D60A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{212B30DC-01C1-4B26-A9EE-2102B181770A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{212B30DC-01C1-4B26-A9EE-2102B181770A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{212B30DC-01C1-4B26-A9EE-2102B181770A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3053B806-4E1F-499C-9AED-4238711D60A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3053B806-4E1F-499C-9AED-4238711D60A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

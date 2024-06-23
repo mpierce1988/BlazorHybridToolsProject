@@ -1,6 +1,7 @@
 using OfficeOpenXml;
+using ResultSetIntrepreter.Services;
 
-namespace ResultSetIntrepreter.Services;
+namespace ResultSetInterpreter.Services.EpPlus;
 
 public class EpPlusExcelWorkbookParser : IExcelWorkbookParser
 {

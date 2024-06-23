@@ -2,7 +2,7 @@ using OfficeOpenXml;
 using ResultSetInterpreter.Models.ExcelCSharp;
 using ResultSetInterpreter.Services.Interfaces;
 
-namespace ResultSetIntrepreter.Services;
+namespace ResultSetInterpreter.Services.EpPlus;
 
 public class EpPlusExcelCSharpWorkbookParser : IExcelCSharpWorkbookParser
 {

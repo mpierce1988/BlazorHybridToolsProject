@@ -1,5 +1,6 @@
 using FluentAssertions;
 using ResultSetInterpreter.Models.ExcelCSharp;
+using ResultSetInterpreter.Services.EpPlus;
 using ResultSetInterpreter.Services.Interfaces;
 using ResultSetInterpreter.Services.Test.Utilities;
 using ResultSetIntrepreter.Services;

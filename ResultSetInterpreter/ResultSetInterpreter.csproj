@@ -67,6 +67,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj" />
       <ProjectReference Include="..\ResultSetInterpreter.SharedComponents\ResultSetInterpreter.SharedComponents.csproj" />
       <ProjectReference Include="..\ResultSetInterpreter.Services\ResultSetInterpreter.Services.csproj" />
     </ItemGroup>
