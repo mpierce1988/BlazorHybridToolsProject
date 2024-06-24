@@ -24,7 +24,18 @@ public static class MauiProgram
         builder.Services.AddScoped<IExcelWorkbookParser, EpPlusExcelWorkbookParser>();
         builder.Services.AddScoped<IExcelComparisonService, ExcelComparisonService>();
         builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
+
+        // Currently, there is a bug with Microsoft's implementation of FilePicker when running on MacOS.
+        // There is a workaround implementation I found on Github, and implemented as MacOSFilePickerService
+        // Use compiler directives to dynamically choose the correct FilePickerService depending on the platform
+#if MACCATALYST
+
         builder.Services.AddScoped<IFilePickerService, MacOSFilePickerService>();
+#else
+        builder.Services.AddScoped<IFilePickerService, StandardOSFilePickerService>();
+#endif
+
+
         builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();
         builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
 

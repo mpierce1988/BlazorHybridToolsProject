@@ -1,18 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter", "ResultSetInterpreter\ResultSetInterpreter.csproj", "{B1DE69C7-1298-431B-B529-E3E8A450FEF3}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter", "ResultSetInterpreter\ResultSetInterpreter.csproj", "{B1DE69C7-1298-431B-B529-E3E8A450FEF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services", "ResultSetInterpreter.Services\ResultSetInterpreter.Services.csproj", "{559DE9D4-A73E-4EF6-900B-2622AA127D05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Services", "ResultSetInterpreter.Services\ResultSetInterpreter.Services.csproj", "{559DE9D4-A73E-4EF6-900B-2622AA127D05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services.Test", "ResultSetInterpreter.Services.Test\ResultSetInterpreter.Services.Test.csproj", "{9493E120-CCA8-46EB-B111-66DFC84B6C40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Services.Test", "ResultSetInterpreter.Services.Test\ResultSetInterpreter.Services.Test.csproj", "{9493E120-CCA8-46EB-B111-66DFC84B6C40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Models", "ResultSetInterpreter.Models\ResultSetInterpreter.Models.csproj", "{2D58264A-AA5B-496B-B4F3-F1CC45886018}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Models", "ResultSetInterpreter.Models\ResultSetInterpreter.Models.csproj", "{2D58264A-AA5B-496B-B4F3-F1CC45886018}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.SharedComponents", "ResultSetInterpreter.SharedComponents\ResultSetInterpreter.SharedComponents.csproj", "{D3BAA46E-0D85-4374-A623-E8C3A81C20DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.SharedComponents", "ResultSetInterpreter.SharedComponents\ResultSetInterpreter.SharedComponents.csproj", "{D3BAA46E-0D85-4374-A623-E8C3A81C20DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Web", "ResultSetInterpreter.Web\ResultSetInterpreter.Web.csproj", "{212B30DC-01C1-4B26-A9EE-2102B181770A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Web", "ResultSetInterpreter.Web\ResultSetInterpreter.Web.csproj", "{212B30DC-01C1-4B26-A9EE-2102B181770A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services.EpPlus", "ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj", "{3053B806-4E1F-499C-9AED-4238711D60A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Services.EpPlus", "ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj", "{3053B806-4E1F-499C-9AED-4238711D60A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +25,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B1DE69C7-1298-431B-B529-E3E8A450FEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B1DE69C7-1298-431B-B529-E3E8A450FEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1DE69C7-1298-431B-B529-E3E8A450FEF3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{B1DE69C7-1298-431B-B529-E3E8A450FEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1DE69C7-1298-431B-B529-E3E8A450FEF3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{559DE9D4-A73E-4EF6-900B-2622AA127D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -48,5 +52,8 @@ Global
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

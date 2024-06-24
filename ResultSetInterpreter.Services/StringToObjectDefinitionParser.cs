@@ -16,7 +16,7 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
 
         // Get the table name and column names with types from the temple table create statement
         //string tableCreateMatchRegex = @"CREATE TABLE #(?<tableName>\w+)\s*\((?<columns>.+?)\);";
-        Regex tableCreateRegex = new Regex(@"CREATE TABLE #(?<tableName>\w+)\s*\((?<columns>.+?)\);");
+        Regex tableCreateRegex = new Regex(@"CREATE TABLE #(?<tableName>\w+)\s*\(\s?(?<columns>.+)\);?");
         
         Match tableCreateMatch = tableCreateRegex.Match(insertStatement);
         
@@ -33,7 +33,7 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         }
         
         // Get the Insert statement
-        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\sVALUES\s\((?<values>.+?)\);");
+        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\sVALUES\s\((?<values>.+)\);");
         Match insertMatch = insertRegex.Match(insertStatement);
 
         if (insertMatch.Success)

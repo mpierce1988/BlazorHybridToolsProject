@@ -111,7 +111,7 @@ INSERT INTO #TestTable ({columnName}) VALUES ({testValue});";
         string nameValue = "TestName";
 
         string createAndInsertStatement =
-            @$"CREATE TABLE #TestTable ({idColumnName} {idColumnDataType}, {nameColumnName} {nameColumnDataType});
+            @$"CREATE TABLE #TestTable ({idColumnName} {idColumnDataType}, {nameColumnName} {nameColumnDataType})
 
 INSERT INTO #TestTable ({idColumnName}, {nameColumnName})
 VALUES
@@ -205,4 +205,45 @@ INSERT INTO #Users (UserID, UserName, Email) VALUES
         string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
         Assert.Equal(expectedJson, actualJson);
     }
+
+    [Fact]
+    public async Task ParseInsertStatement_TableDeclarationWithBracketsAndSpaces_ReturnsCorrectResult()
+    {
+        // Arrange
+        string createTableStatement = "CREATE TABLE #temptable ( [SystemSettingID] int, [SystemSettingConstant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )";
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "temptable",
+            Properties = new()
+            {
+              new Property()
+              {
+                  Name = "SystemSettingID",
+                  Type = typeof(Int32)
+              },
+              new Property()
+              {
+                  Name = "SystemSettingConstant",
+                  Type = typeof(string)
+              },
+              new Property()
+              {
+                  Name = "Description",
+                  Type = typeof(string)
+              },
+              new Property()
+              {
+                  Name = "Value",
+                  Type = typeof(string)
+              }
+            }
+        };
+
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+
+        // Assert
+        Assert.Equal(expectedResult, actualResult);
+
+	}
 }
