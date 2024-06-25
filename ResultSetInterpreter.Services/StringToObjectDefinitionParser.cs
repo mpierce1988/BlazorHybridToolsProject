@@ -12,11 +12,13 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         ObjectDefinition result = new();
         
         // Remove new line or return characters from the insert statement
-        insertStatement = insertStatement.Replace("\n", " ").Replace("\r", " ");
+        // insertStatement = insertStatement.Replace("\n", " ").Replace("\r", " ");
 
         // Get the table name and column names with types from the temple table create statement
         //string tableCreateMatchRegex = @"CREATE TABLE #(?<tableName>\w+)\s*\((?<columns>.+?)\);";
-        Regex tableCreateRegex = new Regex(@"CREATE TABLE #(?<tableName>\w+)\s*\(\s?(?<columns>.+)\);?");
+        RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
+
+        Regex tableCreateRegex = new Regex(@"CREATE TABLE #(?<tableName>\w+)\s*\(\s?(?<columns>.+)\);?", options);
         
         Match tableCreateMatch = tableCreateRegex.Match(insertStatement);
         
@@ -100,7 +102,9 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         List<Property> result = new();
         
         // Regex tp extract column names and their data types
-        Regex columnRegex = new Regex(@"(?<columnName>\w+)\s(?<dataType>[^,\n]+)(?:,|$)");
+        // Really, this is two separate Regex expressions seperated by an OR | operator
+
+        Regex columnRegex = new Regex(@"\[(?<columnName>[^\]]+)\]\s(?<dataType>[^,]+)(?:,|$)|(?<columnName>\w+)\s(?<dataType>[^,]+)(?:,|$)");
 
         foreach (Match columnMatch in columnRegex.Matches(columnsText))
         {
