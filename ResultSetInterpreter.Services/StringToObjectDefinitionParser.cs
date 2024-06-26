@@ -35,13 +35,11 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         }
         
         // Get the Insert statement
-        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\sVALUES\s\((?<values>.+)\);");
+        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\s?\n?VALUES\s?\n?\((?<values>[\s\S]+)\);?", options);
         Match insertMatch = insertRegex.Match(insertStatement);
 
         if (insertMatch.Success)
         {
-            
-            
             // Get the columns to determine the order of the values
             string columnsText = insertMatch.Groups["columns"].Value.Trim();
             // split the columns text by comma
@@ -52,6 +50,8 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
             for (int i = 0; i < columns.Length; i++)
             {
                 string columnName = columns[i].Trim();
+                // Remove the square brackets, if they are present
+                columnName = columnName.Trim('[', ']');
                 Property? property = result.Properties.FirstOrDefault(prop => prop.Name == columnName);
 
                 if (property == null)
@@ -65,6 +65,9 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
             
             // Get the values string
             string valuesString = insertMatch.Groups["values"].Value.Trim();
+            
+            // remove new line and return characters
+            valuesString = valuesString.Replace("\n", " ").Replace("\r", " ");
             
             // Split the values by "), (" to get each item
             string[] items = valuesString.Split("), (");
@@ -90,8 +93,6 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
             
                 result.Objects.Add(propertyValues);
             }
-            
-            
         }
         
         return result;

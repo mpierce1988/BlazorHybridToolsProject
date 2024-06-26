@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using ResultSetInterpreter.Models.ObjectDefinition;
 using ResultSetIntrepreter.Services;
 
@@ -86,6 +87,8 @@ INSERT INTO #TestTable ({columnName}) VALUES ({testValue});";
         Assert.Equal(expectedNumProperties, definition.Properties.Count);
         Assert.Equal(expectedNumRowsData, definition.Objects.Count);
         Property property = definition.Properties.First(prop => prop.Name == columnName);
+        Assert.NotNull(property);
+        Assert.Equal(cSharpDataType, property.Type!.ToString());
         Assert.NotNull(definition.Objects[0]);
         Assert.NotNull(definition.Objects[0][property]);
         string resultValue = definition.Objects[0][property]!.ToString() ?? "";
@@ -121,11 +124,11 @@ VALUES
         
         // Assert
         Assert.Equal(numExpectedProperties, definition.Properties.Count);
-        //Assert.Equal(numExpectedDataRows, definition.Objects.Count);
-        //Property idProperty = definition.Properties.First(prop => prop.Name == idColumnName);
-        //Assert.Equal(idValue, int.Parse(definition.Objects[0][idProperty]!.ToString() ?? ""));
-        //Property nameProperty = definition.Properties.First(prop => prop.Name == nameColumnName);
-        //Assert.Equal(nameValue, definition.Objects[0][nameProperty]);
+        Assert.Equal(numExpectedDataRows, definition.Objects.Count);
+        Property idProperty = definition.Properties.First(prop => prop.Name == idColumnName);
+        Assert.Equal(idValue, int.Parse(definition.Objects[0][idProperty]!.ToString() ?? ""));
+        Property nameProperty = definition.Properties.First(prop => prop.Name == nameColumnName);
+        Assert.Equal(nameValue, definition.Objects[0][nameProperty]);
         
     }
 
@@ -134,14 +137,11 @@ VALUES
     {
         // Arrange
 
-        string createAndInsertStatement = @"CREATE TABLE #Users (
-    UserID INT,
-    UserName NVARCHAR(100),
-    Email NVARCHAR(100)
-);
+        string createAndInsertStatement = @"CREATE TABLE #Users (UserID INT, UserName NVARCHAR(100), Email NVARCHAR(100));
 
 -- Inserting mock data into the #Users table
-INSERT INTO #Users (UserID, UserName, Email) VALUES
+INSERT INTO #Users (UserID, UserName, Email) 
+VALUES
 (1, 'JohnDoe', 'john.doe@example.com'),
 (2, 'JaneSmith', 'jane.smith@example.com'),
 (3, 'MikeBrown', 'mike.brown@example.com');";
@@ -203,13 +203,14 @@ INSERT INTO #Users (UserID, UserName, Email) VALUES
         string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
         string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
         Assert.Equal(expectedJson, actualJson);
+        //Assert.Equivalent(expectedResult, actualResult);
     }
 
     [Fact]
     public async Task ParseInsertStatement_TableDeclarationWithBracketsAndSpaces_ReturnsCorrectResult()
     {
         // Arrange
-        string createTableStatement = "CREATE TABLE #temptable ( [SystemSettingID] int, [SystemSettingConstant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )";
+        string createTableStatement = "CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )";
         ObjectDefinition expectedResult = new()
         {
             Name = "temptable",
@@ -217,12 +218,12 @@ INSERT INTO #Users (UserID, UserName, Email) VALUES
             {
               new Property()
               {
-                  Name = "SystemSettingID",
+                  Name = "SettingID",
                   Type = typeof(Int32)
               },
               new Property()
               {
-                  Name = "SystemSettingConstant",
+                  Name = "Constant",
                   Type = typeof(string)
               },
               new Property()
@@ -242,14 +243,73 @@ INSERT INTO #Users (UserID, UserName, Email) VALUES
         ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
 
         // Assert
+        Assert.Equivalent(expectedResult, actualResult);
+	}
+    
+    [Fact]
+    public async Task ParseInsertStatement_TableWithDataBracketsSpaces_ReturnsCorrectResult()
+    {
+        // Arrange
+        string createTableStatement = @"CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )
 
-        // DEBUG check as JSON for more information
+INSERT INTO #temptable ( [SettingID], [Constant], [Description], [Value] )
+VALUES
+(1, 'Test', 'Test Description', 'Test Value');";
+        
+        Property settingIdProperty = new Property
+        {
+            Name = "SettingID",
+            Type = typeof(int)
+        };
+        
+        Property constantProperty = new Property
+        {
+            Name = "Constant",
+            Type = typeof(string)
+        };
+        
+        Property descriptionProperty = new Property
+        {
+            Name = "Description",
+            Type = typeof(string)
+        };
+        
+        Property valueProperty = new Property
+        {
+            Name = "Value",
+            Type = typeof(string)
+        };
+        
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "temptable",
+            Properties = new()
+            {
+                settingIdProperty,
+                constantProperty,
+                descriptionProperty,
+                valueProperty
+            },
+            Objects = new List<OrderedDictionary>()
+            {
+                new OrderedDictionary()
+                {
+                    {settingIdProperty, "1"},
+                    {constantProperty, "Test"},
+                    {descriptionProperty, "Test Description"},
+                    {valueProperty, "Test Value"}
+                }
+            }
+        };
+
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+
+        // Assert
+        // Assert.Equivalent(expectedResult, actualResult);
         string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
         string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
-
+        
         Assert.Equal(expectedJson, actualJson);
-
-        Assert.Equivalent(expectedResult, actualResult);
-
-	}
+    }
 }
