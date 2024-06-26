@@ -1,9 +1,54 @@
 ﻿@page "/"
 
 <MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
-    <MudGrid>
+    <MudGrid Justify="Justify.Center">
         <MudItem xs="12">
-            <MudText Typo="Typo.h3" Align="Align.Center">Welcome to Toche Station!</MudText>
+            <MudText Typo="Typo.h3" Align="Align.Center">Welcome to Tosche Station!</MudText>
+        </MudItem>
+        <MudItem xs="12" lg="8">
+            <div class="d-flex justify-center">
+                <MudImage Src="banner.jpg" Fluid="true"  Elevation="25" 
+                          Alt="Luke visiting his friends at Tosche Station" Class="rounded-lg"/>
+            </div>
+        </MudItem>
+        <MudItem xs="12" lg="4">
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12">
+                    <MudText Typo="Typo.body1" Align="Align.Center">"But I was going into Tosche Station to pick up some power converters!"</MudText>
+                    <MudText Typo="Typo.body1" Align="Align.Center">"You can waste time with your friends when your chores are done."</MudText>
+                    <MudText Typo="Typo.caption" Align="Align.Center"><em>Luke Skywalker and Owen Lars</em></MudText>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudExpansionPanels>
+                        @foreach (KeyValuePair<string, string> kvp in _expansionPanelContent)
+                        {
+                            <MudExpansionPanel Text="@kvp.Key">
+                                <MudText Typo="Typo.body1">@kvp.Value</MudText>
+                            </MudExpansionPanel>
+                        }
+                    </MudExpansionPanels>
+                </MudItem>
+            </MudGrid>
         </MudItem>
     </MudGrid>
 </MudPaper>
+
+@code {
+
+    private Dictionary<string, string> _expansionPanelContent = new Dictionary<string, string>
+    {
+        { "Layout", "A power station and repair shop, Tosche Station was located just outside of the city of Anchorhead on the Great Chott salt flat of Tatooine. The station was owned by Merl Tosche but he seldom visited, instead allowing his employee Laze \"Fixer\" Loneozner to run the shop.\n\nThe station consisted of three buildings; the main building housed recharge facilities, a sales office, and game room. Next to the main building was a spare parts garage and repair shop. Behind the main building was the reactor building, which held a fusion generator from an in-system space barge. The reactor generated energy which was transmitted via underground power conduits to buildings in Anchorhead as well as nearby moisture farms." },
+        { "History", @"Merl Tosche owned Tosche station, but rarely visited. Customers appeared infrequently, giving Loneozner free rein of the station. Loneozner spent most of his time at the station with his friends, including his girlfriend Camie Marstrap, Luke Skywalker, Biggs Darklighter, Windy, and Deak. Loneozner secretly worked on building a podracer in the spare parts garage, which he intended to sell at Mos Espa, using the profits to fund his wedding to Camie.
+
+In 0 BBY, Skywalker went to the station to tell his friends about a battle he saw raging between two ships high above Tatooine. It was at this time that Biggs Darklighter informed Skywalker that he intended to abandon his newly assigned post on the Imperial starship Rand Ecliptic and join the Rebel Alliance.
+Anchorhead-BoBF
+
+Boba Fett arrives to the station.
+
+After the Rescue of Han Solo, former bounty hunter Boba Fett tracked a gang of Nikto to Tosche Station, where they were harassing Loneozner and Camie. Fett entered the establishment and quickly dispatched the gang, later stealing their speeder bikes to bring back to the Tusken tribe in preparation for their assault on a Pyke Syndicate hovertrain." },
+        { "Behind the Scenes", @"Tosche Station was originally going to appear in Star Wars: Episode IV A New Hope, but was cut from the film. The scene was, however, released in the deleted scenes of the special features of the Blu-Ray release of the original trilogy. The scene shows Luke Skywalker telling his friends about a space battle he saw above the planet.
+
+The location and layout of the station were made canon, as well as the station's owner, Merl Tosche, when it was included in the 2016 version of Star Wars: Complete Locations. " }
+    };
+
+}
