@@ -2,6 +2,7 @@
 @using ResultSetIntrepreter.Services.Interfaces
 @using ResultSetIntrepreter.Services
 @using ResultSetInterpreter.Models.ObjectDefinition
+@using ResultSetIntrepreter.Services.DTOs
 
 <MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
     <MudGrid Justify="Justify.Center">
@@ -78,7 +79,16 @@
                 return;
             }
             
-            _response = await ObjectParser.ParseInsertStatementToCSharpAsync(_request);
+            var response = await ObjectParser.ParseInsertStatementToCSharpAsync(_request);
+
+            if (response.IsValid)
+            {
+                _response = response;
+            }
+            else
+            {
+                _error = response.Errors.FirstOrDefault()?.Message ?? "Unknown error occurred";
+            }
         }
         catch (Exception e)
         {

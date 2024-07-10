@@ -2,6 +2,7 @@ using ResultSetInterpreter.Services.EpPlus;
 using ResultSetInterpreter.Services.Interfaces;
 using ResultSetInterpreter.Services.Test.Utilities;
 using ResultSetIntrepreter.Services;
+using ResultSetIntrepreter.Services.DTOs;
 
 namespace ResultSetInterpreter.Services.Test;
 
@@ -33,10 +34,10 @@ public class ExcelComparisonServiceUnitTests
         await using var testValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         
         // Act
-        ExcelComparisionResult result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        ExcelComparisionResponse response = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
         
         // Assert
-        Assert.True(result.IsValid);
+        Assert.True(response.IsIdentical);
     }
 
     [Fact]
@@ -119,11 +120,11 @@ public class ExcelComparisonServiceUnitTests
         int numberOfDifferences = 1;
         
         // Act
-        ExcelComparisionResult result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        ExcelComparisionResponse response = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
         
         // Assert
-        Assert.False(result.IsValid);
-        Assert.Equal(numberOfDifferences, result.Results.Count());
+        Assert.False(response.IsIdentical);
+        Assert.Equal(numberOfDifferences, response.Results.Count());
     }
 
     [Fact]
@@ -135,10 +136,10 @@ public class ExcelComparisonServiceUnitTests
         int expectedNumberOfDifferences = 2;
         
         // Act
-        ExcelComparisionResult result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        ExcelComparisionResponse response = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
         
         // Assert
-        Assert.False(result.IsValid);
-        Assert.Equal(expectedNumberOfDifferences, result.Results.Count);
+        Assert.False(response.IsIdentical);
+        Assert.Equal(expectedNumberOfDifferences, response.Results.Count);
     }
 }

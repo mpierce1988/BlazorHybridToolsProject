@@ -1,6 +1,8 @@
 @page "/ExcelComparison"
 @using ResultSetInterpreter.Services.Interfaces
 @using ResultSetIntrepreter.Services
+@using ResultSetIntrepreter.Services.DTOs
+@using ResultSetInterpreter.Components.Components
 
 <MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
     <MudGrid Justify="Justify.Center">
@@ -36,7 +38,7 @@
             <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetTestFile">Reset Test File</MudButton>
         </MudItem>
         <MudItem xs="12">
-            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_controlFile == null || _testFile == null)">
+            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary">
                 Compare Files
             </MudButton>
         </MudItem>
@@ -48,7 +50,7 @@
             }
             else
             {
-                @if (_result.IsValid)
+                @if (_result.IsIdentical)
                 {
                     <MudText Typo="Typo.body1" Align="Align.Center">Excel files are identical!</MudText>
                 }
@@ -75,16 +77,23 @@
 @code {
     [Inject] private IExcelComparisonService ComparisonService { get; set; } = default!;
     [Inject] private IFilePickerService FilePicker { get; set; } = default!;
+    [Inject] private IDialogService DialogService { get; set; } = default!;
 
     private Stream? _controlFile = null;
     private string? _controlFileName = null;
     private Stream? _testFile = null;
     private string? _testFileName = null;
 
-    private ExcelComparisionResult? _result = null;
+    private ExcelComparisionResponse? _result = null;
 
     private bool _isLoading;
     private string? _error = null;
+
+    DialogOptions _dialogOptions = new DialogOptions()
+    {
+        CloseButton = true,
+        MaxWidth = MaxWidth.Small,
+    };
 
     private async Task PickControlFile()
     {
@@ -100,7 +109,13 @@
         }
         catch (Exception e)
         {
-            _error = e.Message;
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while picking the control file: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
             _isLoading = false;
         }
     }
@@ -125,7 +140,13 @@
         }
         catch (Exception e)
         {
-            _error = e.Message;
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while picking the test file: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
             _isLoading = false;
         }
     }
@@ -146,26 +167,36 @@
 
             if (_controlFile == null)
             {
-                _error = "Control file is required";
-            }
-            else if (_testFile == null)
-            {
-                _error = "Test file is required";
-            }
-
-            if (_error != null)
-            {
-                _isLoading = false;
-                return;
+                throw new Exception("Control file is required");
             }
             
-            _result = await ComparisonService.CompareExcelFilesAsync(_controlFile!, _testFile!);
+            if (_testFile == null)
+            {
+                throw new Exception("Test file is required");
+            }
+            
+            var response = await ComparisonService.CompareExcelFilesAsync(_controlFile!, _testFile!);
+
+            if (response.IsValid)
+            {
+                _result = response;
+            }
+            else
+            {
+                throw new Exception(response.Errors.FirstOrDefault()?.Message ?? "Unknown error occurred");
+            }
             
             _isLoading = false;
         }
         catch (Exception e)
         {
-            _error = e.Message;
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while comparing the files: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
             _isLoading = false;
         }
     }

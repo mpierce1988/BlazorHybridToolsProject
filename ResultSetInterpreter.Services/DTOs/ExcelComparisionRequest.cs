@@ -1,4 +1,4 @@
-namespace ResultSetIntrepreter.Services;
+namespace ResultSetIntrepreter.Services.DTOs;
 
 public class ExcelComparisionRequest
 {

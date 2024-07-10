@@ -1,5 +1,6 @@
 using ResultSetInterpreter.Models.Workbook;
 using ResultSetInterpreter.Services.Interfaces;
+using ResultSetIntrepreter.Services.DTOs;
 
 namespace ResultSetIntrepreter.Services;
 
@@ -12,61 +13,70 @@ public class ExcelComparisonService : IExcelComparisonService
         _excelWorkbookParser = excelWorkbookParser;
     }
 
-    public async Task<ExcelComparisionResult> CompareExcelFilesAsync(Stream controlValue, Stream testValue)
+    public async Task<ExcelComparisionResponse> CompareExcelFilesAsync(Stream controlValue, Stream testValue)
     {
-        // Validate streams are not null
-        if (controlValue == null || testValue == null)
-        {
-            throw new ArgumentNullException("Streams cannot be null");
-        }
-        
-        // Parse the control and test files
-        Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(controlValue);
-        Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(testValue);
-        
-        // Validate the workbooks have the same number of sheets
-        EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
-
         // Create a new ExcelComparisonResult
-        ExcelComparisionResult result = new();
+        ExcelComparisionResponse response = new();
         
-        // Compare the control and test workbooks
-        for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
+        try
         {
-            Sheet controlSheet = controlWorkbook.Sheets[i];
-            Sheet testSheet = testWorkbook.Sheets[i];
-
-            if (controlSheet.Cells == null && testSheet.Cells == null)
+            // Validate streams are not null
+            if (controlValue == null || testValue == null)
             {
-                // if both are null, skip to the next sheet
-                continue;
+                throw new ArgumentNullException("Streams cannot be null");
             }
-            
-            // Compare the control and test cells
-            for (int j = 0; j < controlSheet.Cells!.GetLength(0); j++)
+
+            // Parse the control and test files
+            Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(controlValue);
+            Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(testValue);
+
+            // Validate the workbooks have the same number of sheets
+            EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
+
+
+
+            // Compare the control and test workbooks
+            for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
             {
-                for (int k = 0; k < controlSheet.Cells!.GetLength(1); k++)
+                Sheet controlSheet = controlWorkbook.Sheets[i];
+                Sheet testSheet = testWorkbook.Sheets[i];
+
+                if (controlSheet.Cells == null && testSheet.Cells == null)
                 {
-                    object? currentControlValue = controlSheet.Cells[j, k];
-                    object? currentTestValue = testSheet.Cells![j, k];
-                    
-                    // If the control and test values are not equal, add the comparison to the result
-                    if (!ObjectsAreEqual(currentControlValue, currentTestValue))
+                    // if both are null, skip to the next sheet
+                    continue;
+                }
+
+                // Compare the control and test cells
+                for (int j = 0; j < controlSheet.Cells!.GetLength(0); j++)
+                {
+                    for (int k = 0; k < controlSheet.Cells!.GetLength(1); k++)
                     {
-                        result.Results.Add(new ExcelComparisonValue
+                        object? currentControlValue = controlSheet.Cells[j, k];
+                        object? currentTestValue = testSheet.Cells![j, k];
+
+                        // If the control and test values are not equal, add the comparison to the result
+                        if (!ObjectsAreEqual(currentControlValue, currentTestValue))
                         {
-                            SheetName = controlSheet.Name ?? testSheet.Name ?? $"Sheet{i + 1}",
-                            RowLocation = $"{j}",
-                            ColumnLocation = $"{k}",
-                            ControlValue = currentControlValue,
-                            TestValue = currentTestValue
-                        });
+                            response.Results.Add(new ExcelComparisonValue
+                            {
+                                SheetName = controlSheet.Name ?? testSheet.Name ?? $"Sheet{i + 1}",
+                                RowLocation = $"{j}",
+                                ColumnLocation = $"{k}",
+                                ControlValue = currentControlValue,
+                                TestValue = currentTestValue
+                            });
+                        }
                     }
                 }
             }
         }
+        catch (Exception e)
+        {
+            response.AddException(new HandledException(e.Message));
+        }
 
-        return result;
+        return response;
     }
 
     private void EnsureWorkbooksAreSimilar(Workbook controlWorkbook, Workbook testWorkbook)

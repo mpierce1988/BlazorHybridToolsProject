@@ -1,6 +1,6 @@
-namespace ResultSetIntrepreter.Services;
+namespace ResultSetIntrepreter.Services.DTOs;
 
-public class ParseInsertStatementToCSharpResponse
+public class ParseInsertStatementToCSharpResponse : BaseResponse
 {
     public string? CSharpCode { get; set; }
 }

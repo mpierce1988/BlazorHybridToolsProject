@@ -1,5 +1,6 @@
 using ResultSetInterpreter.Models.ObjectDefinition;
 using ResultSetIntrepreter.Services;
+using ResultSetIntrepreter.Services.DTOs;
 using ResultSetIntrepreter.Services.Interfaces;
 
 namespace ResultSetInterpreter.Services.Test;

@@ -1,4 +1,5 @@
 using ResultSetInterpreter.Models.ObjectDefinition;
+using ResultSetIntrepreter.Services.DTOs;
 using ResultSetIntrepreter.Services.Interfaces;
 
 namespace ResultSetIntrepreter.Services;
@@ -18,20 +19,28 @@ public class ObjectParserService : IObjectParserService
     {
         ParseInsertStatementToCSharpResponse result = new();
         
-        ObjectDefinition definition = await _stringToObjectDefinitionParser.ParseInsertStatementAsync(request.InsertStatement!);
-
-        switch (request.PrintType)
+        try
         {
-            case ObjectDefinitionPrintType.ClassDefinition:
-                result.CSharpCode = await _objectDefinitionPrinter.ClassDefinitionToCSharpCodeAsync(definition);
-                break;
-            case ObjectDefinitionPrintType.Data:
-                result.CSharpCode = await _objectDefinitionPrinter.DataToCSharpListCodeAsync(definition);
-                break;
-            case ObjectDefinitionPrintType.ClassDefinitionAndData:
-            default:
-                result.CSharpCode = await _objectDefinitionPrinter.ObjectDefinitionToCSharpCode(definition);
-                break;
+            ObjectDefinition definition =
+                await _stringToObjectDefinitionParser.ParseInsertStatementAsync(request.InsertStatement!);
+
+            switch (request.PrintType)
+            {
+                case ObjectDefinitionPrintType.ClassDefinition:
+                    result.CSharpCode = await _objectDefinitionPrinter.ClassDefinitionToCSharpCodeAsync(definition);
+                    break;
+                case ObjectDefinitionPrintType.Data:
+                    result.CSharpCode = await _objectDefinitionPrinter.DataToCSharpListCodeAsync(definition);
+                    break;
+                case ObjectDefinitionPrintType.ClassDefinitionAndData:
+                default:
+                    result.CSharpCode = await _objectDefinitionPrinter.ObjectDefinitionToCSharpCode(definition);
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            result.AddException(new HandledException(e.Message));
         }
 
         return result;

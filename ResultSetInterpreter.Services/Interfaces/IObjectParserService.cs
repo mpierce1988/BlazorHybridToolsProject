@@ -1,3 +1,5 @@
+using ResultSetIntrepreter.Services.DTOs;
+
 namespace ResultSetIntrepreter.Services.Interfaces;
 
 public interface IObjectParserService
