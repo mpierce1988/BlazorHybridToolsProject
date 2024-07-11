@@ -19,8 +19,6 @@ public class Program
         builder.Services.AddSingleton<WeatherForecastService>();
         
         builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
-        builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();
-        builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
 
         var app = builder.Build();
 

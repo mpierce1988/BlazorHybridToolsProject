@@ -38,7 +38,7 @@
             <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetTestFile">Reset Test File</MudButton>
         </MudItem>
         <MudItem xs="12">
-            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary">
+            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_controlFile is null || _testFile is null)">
                 Compare Files
             </MudButton>
         </MudItem>

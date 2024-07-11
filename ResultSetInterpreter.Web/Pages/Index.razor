@@ -9,12 +9,6 @@
 
 <InputFile OnChange="UploadFile" class="form-control" />
 
-@if (_fileStream != null)
-{
-    <br/>
-    <button class="btn btn-secondary" @onclick="ConvertFile">Convert Benchmark</button>
-}
-
 <br />
 
 @if (_isLoading)
@@ -71,7 +65,6 @@
 }
 
 @code {
-    [Inject] private IExcelToCSharpService ExcelToCSharpService { get; set; } = default!;
     [Inject] private IBenchmarkService BenchmarkService { get; set; } = default!;
     
     private bool _isLoading;
@@ -113,35 +106,7 @@
             _isLoading = false;
         }        
     }
-
-    private async Task ConvertFile()
-    {
-        try
-        {
-            // reset state
-            _isLoading = false;
-            _error = null;
-            _result = null;
-            
-            // Validate a file has been loaded
-            if (_fileStream == null)
-            {
-                _error = "No file selected";
-                return;
-            }
-
-            _isLoading = true;
-            
-            _result = await ExcelToCSharpService.ConvertExcelToCSharpAsync(_fileStream);
-
-            _isLoading = false;
-        }
-        catch (Exception e)
-        {
-            _error = e.Message;
-            _isLoading = false;
-        }
-    }
+    
     
     private async Task RunBenchmark()
     {

@@ -27,6 +27,9 @@
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests.ObjectDefinitionToCSharpCode_WhenCalledWithClassDefinitionAndData_ReturnsCSharpCode&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelComparisonServiceUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelWorkbookParserUnitTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

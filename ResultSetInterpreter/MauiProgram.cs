@@ -35,10 +35,6 @@ public static class MauiProgram
         builder.Services.AddScoped<IFilePickerService, StandardOSFilePickerService>();
 #endif
 
-
-        builder.Services.AddScoped<IExcelCSharpWorkbookParser, EpPlusExcelCSharpWorkbookParser>();
-        builder.Services.AddScoped<IExcelToCSharpService, ExcelCSharpService>();
-
         builder.Services.AddMudServices();
 
 #if DEBUG

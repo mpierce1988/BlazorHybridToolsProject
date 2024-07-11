@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider IsDarkMode="true"/>
+<MudThemeProvider IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
@@ -14,7 +14,7 @@
         <MudDrawerHeader>
             <MudText Typo="Typo.h5" Class="mt-1">Tosche Station</MudText>
         </MudDrawerHeader>
-        <NavMenu />
+        <NavMenu IsDarkMode="@_isDarkMode" OnToggleDarkMode="OnToggleChanged"/>
     </MudDrawer>
     <MudMainContent>
         <MudContainer Fixed="true">
@@ -25,6 +25,15 @@
 
 @code {
     bool _drawerOpen = true;
+    bool _isDarkMode = true;
+    
+
+    private void OnToggleChanged(bool toggled)
+    {
+        // Because variable is not two-way bound, we need to update it manually
+        _isDarkMode = toggled;
+        StateHasChanged();
+    }
 
     void DrawerToggle()
     {

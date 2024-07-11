@@ -44,11 +44,10 @@ public class ExcelComparisonServiceUnitTests
     public async Task FirstStreamIsNull_ThrowsArgumentNullException()
     {
         // Arrange
-        Stream? controlValue = null;
         await using var testValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         
         // Act
-        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        var result = await _comparisonService.CompareExcelFilesAsync(null!, testValue);
         
         // Act and Assert
         Assert.False(result.IsValid);
@@ -59,10 +58,9 @@ public class ExcelComparisonServiceUnitTests
     {
         // Arrange
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
-        Stream? testValue = null;
         
         // Act
-        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, null!);
         
         // Assert
         Assert.False(result.IsValid);
