@@ -47,9 +47,11 @@ public class ExcelComparisonServiceUnitTests
         Stream? controlValue = null;
         await using var testValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
         // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => 
-            _comparisonService.CompareExcelFilesAsync(controlValue!, testValue));
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -59,9 +61,11 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         Stream? testValue = null;
         
-        // Act and Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => 
-            _comparisonService.CompareExcelFilesAsync(controlValue, testValue!));
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
+        // Assert
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -71,8 +75,11 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserTrackingOrder));
         
-        // Act and Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => _comparisonService.CompareExcelFilesAsync(controlValue, testValue));
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
+        // Assert
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -82,9 +89,11 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserTrackings));
         
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() =>
-            _comparisonService.CompareExcelFilesAsync(controlValue, testValue));
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
+        // Assert
+        Assert.False(result.IsValid);
     }
 
     [Fact]
@@ -94,9 +103,11 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserIsConfirmedTrackingFileName));
         
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
-            _comparisonService.CompareExcelFilesAsync(controlValue, testValue));
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
+        // Assert
+        Assert.False(result.IsValid);
     }
     
     [Fact]
@@ -106,9 +117,11 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(ExtraUserTrackingFileName));
         
-        // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(() => 
-            _comparisonService.CompareExcelFilesAsync(controlValue, testValue));
+        // Act
+        var result = await _comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        
+        // Assert
+        Assert.False(result.IsValid);
     }
 
     [Fact]
