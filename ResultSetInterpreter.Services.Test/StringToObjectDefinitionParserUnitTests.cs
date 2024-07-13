@@ -457,4 +457,80 @@ VALUES
         
         Assert.Equal(expectedResultJson, actualResultJson);
     }
+    
+    [Fact]
+    public async Task ParseInsertStatement_TableWithStringPrefixedByN_ReturnsCorrectResult()
+    {
+        // Arrange
+        string createTableStatement = @"-- Create temporary table
+CREATE TABLE #TempTable (
+    [ID] INT,
+    [Name] NVARCHAR(50),
+    [Age] INT
+);
+
+-- Insert statement
+INSERT INTO #TempTable ([ID], [Name], [Age])
+VALUES
+    (1, N'John Doe', 30),
+    (2, N'Jane Smith', 25);";
+        Property idProperty = new Property
+        {
+            Name = "ID",
+            Type = typeof(int)
+        };
+        
+        Property nameProperty = new Property
+        {
+            Name = "Name",
+            Type = typeof(string)
+        };
+        
+        Property ageProperty = new Property
+        {
+            Name = "Age",
+            Type = typeof(int)
+        };
+        
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "TempTable",
+            Properties = new()
+            {
+                idProperty,
+                nameProperty,
+                ageProperty
+            },
+            Objects = new List<OrderedDictionary>()
+            {
+                new OrderedDictionary()
+                {
+                    {idProperty, "1"},
+                    {nameProperty, "John Doe"},
+                    {ageProperty, "30"}
+                },
+                new OrderedDictionary()
+                {
+                    {idProperty, "2"},
+                    {nameProperty, "Jane Smith"},
+                    {ageProperty, "25"}
+                }
+            }
+        };
+        
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        
+        // Assert
+        string expectedResultJson = JsonConvert.SerializeObject(expectedResult);
+        string actualResultJson = JsonConvert.SerializeObject(actualResult);
+        
+        Assert.Equal(expectedResultJson, actualResultJson);
+    }
+}
+
+public class TempTable {
+    public Int32 ID { get; set; }
+    public String Name { get; set; }
+    public Int32 Age { get; set; }
 }
