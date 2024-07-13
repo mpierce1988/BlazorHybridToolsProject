@@ -13,14 +13,6 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
     
     #endregion
     
-    #region Constructor
-    
-    public StringToObjectDefinitionParser()
-    {
-    }
-    
-    #endregion
-    
     #region Public Methods
     
     /// <summary>
