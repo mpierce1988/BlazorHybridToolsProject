@@ -102,6 +102,10 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
                         Property prop = orderedProperties[i];
                         string? value = values[i].Trim();
                         // Remove leading and trailing apostrophes
+                        if (prop.Type == typeof(string))
+                        {
+                            value = value.TrimStart('N');
+                        }
                         value = value.Trim('\'');
                         value = value.Trim('(');
                         value = value.Trim(')');
