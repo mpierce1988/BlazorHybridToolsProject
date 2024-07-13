@@ -15,7 +15,7 @@ public class StringToObjectDefinitionParserUnitTests
         string tempTableDeclaration = $"CREATE TABLE #{tableName} (Id INT, Name NVARCHAR(50));";
         
         // Act
-        ObjectDefinition definition = await _definitionParser.ParseInsertStatementAsync(tempTableDeclaration);
+        ObjectDefinition definition = _definitionParser.ParseInsertStatement(tempTableDeclaration);
         
         Assert.Equal(tableName, definition.Name);
     }
@@ -30,7 +30,7 @@ public class StringToObjectDefinitionParserUnitTests
         string tempTableDeclaration = $"CREATE TABLE #TestTable ({columnName} {columnType});";
         
         // Act
-        ObjectDefinition definition = await _definitionParser.ParseInsertStatementAsync(tempTableDeclaration);
+        ObjectDefinition definition =  _definitionParser.ParseInsertStatement(tempTableDeclaration);
         
         // Assert
         Assert.Equal(1, definition.Properties.Count);
@@ -51,7 +51,7 @@ public class StringToObjectDefinitionParserUnitTests
         string tempTableDeclaration = @$"CREATE TABLE #TestTable (Id INT, {columnName} {columnType});";
         
         // Act
-        ObjectDefinition definition = await _definitionParser.ParseInsertStatementAsync(tempTableDeclaration);
+        ObjectDefinition definition = _definitionParser.ParseInsertStatement(tempTableDeclaration);
         
         // Assert
         Assert.Equal(totalProperties, definition.Properties.Count);
@@ -80,7 +80,7 @@ public class StringToObjectDefinitionParserUnitTests
 INSERT INTO #TestTable ({columnName}) VALUES ({testValue});";
         
         // Act
-        ObjectDefinition definition = await _definitionParser.ParseInsertStatementAsync(createAndPopulateStatement);
+        ObjectDefinition definition = _definitionParser.ParseInsertStatement(createAndPopulateStatement);
         
         // Assert
         Assert.Equal(expectedNumProperties, definition.Properties.Count);
@@ -119,7 +119,7 @@ VALUES
 ({idValue}, {nameValue});";
         
         // Act
-        ObjectDefinition definition = await _definitionParser.ParseInsertStatementAsync(createAndInsertStatement);
+        ObjectDefinition definition = _definitionParser.ParseInsertStatement(createAndInsertStatement);
         
         // Assert
         Assert.Equal(numExpectedProperties, definition.Properties.Count);
@@ -196,7 +196,7 @@ VALUES
         };
         
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createAndInsertStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createAndInsertStatement);
         
         // Assert
         string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
@@ -239,7 +239,7 @@ VALUES
         };
 
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createTableStatement);
 
         // Assert
         Assert.Equivalent(expectedResult, actualResult);
@@ -302,7 +302,7 @@ VALUES
         };
 
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createTableStatement);
 
         // Assert
         // Assert.Equivalent(expectedResult, actualResult);
@@ -377,7 +377,7 @@ VALUES
         };
 
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createTableStatement);
 
         // Assert
         // Assert.Equivalent(expectedResult, actualResult);
@@ -449,7 +449,7 @@ VALUES
         };
         
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createTableStatement);
         
         // Assert
         string expectedResultJson = JsonConvert.SerializeObject(expectedResult);
@@ -519,7 +519,7 @@ VALUES
         };
         
         // Act
-        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createTableStatement);
         
         // Assert
         string expectedResultJson = JsonConvert.SerializeObject(expectedResult);

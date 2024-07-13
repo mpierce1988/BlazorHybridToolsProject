@@ -1,3 +1,4 @@
+using ResultSetInterpreter.Models.DTOs.ExcelComparison;
 using ResultSetInterpreter.Services.EpPlus;
 
 namespace ResultSetInterpreter.Services.Test;

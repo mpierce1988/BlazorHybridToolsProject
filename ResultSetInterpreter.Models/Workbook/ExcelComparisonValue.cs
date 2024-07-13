@@ -1,4 +1,4 @@
-namespace ResultSetIntrepreter.Services;
+namespace ResultSetInterpreter.Models.Workbook;
 
 public class ExcelComparisonValue
 {

@@ -1,3 +1,4 @@
+using ResultSetInterpreter.Models.DTOs.InsertStatementToCSharp;
 using ResultSetInterpreter.Models.ObjectDefinition;
 using ResultSetIntrepreter.Services.DTOs;
 using ResultSetIntrepreter.Services.Interfaces;
@@ -22,7 +23,7 @@ public class ObjectParserService : IObjectParserService
         try
         {
             ObjectDefinition definition =
-                await _stringToObjectDefinitionParser.ParseInsertStatementAsync(request.InsertStatement!);
+                _stringToObjectDefinitionParser.ParseInsertStatement(request.InsertStatement!);
 
             switch (request.PrintType)
             {

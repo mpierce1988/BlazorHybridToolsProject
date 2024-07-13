@@ -4,5 +4,5 @@ namespace ResultSetIntrepreter.Services.Interfaces;
 
 public interface IStringToObjectDefinitionParser
 {
-    public Task<ObjectDefinition> ParseInsertStatementAsync(string insertStatement);
+    public ObjectDefinition ParseInsertStatement(string insertStatement);
 }

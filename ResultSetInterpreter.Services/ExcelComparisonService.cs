@@ -1,3 +1,4 @@
+using ResultSetInterpreter.Models.DTOs.ExcelComparison;
 using ResultSetInterpreter.Models.Workbook;
 using ResultSetInterpreter.Services.Interfaces;
 using ResultSetIntrepreter.Services.DTOs;
@@ -21,10 +22,7 @@ public class ExcelComparisonService : IExcelComparisonService
         try
         {
             // Validate streams are not null
-            if (controlValue == null || testValue == null)
-            {
-                throw new ArgumentNullException("Streams cannot be null");
-            }
+            if (controlValue == null || testValue == null) throw new ArgumentNullException("Streams cannot be null");
 
             // Parse the control and test files
             Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(controlValue);
@@ -33,8 +31,7 @@ public class ExcelComparisonService : IExcelComparisonService
             // Validate the workbooks have the same number of sheets
             EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
 
-
-
+            
             // Compare the control and test workbooks
             for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
             {

@@ -1,6 +1,6 @@
 using ResultSetInterpreter.Models.ObjectDefinition;
 
-namespace ResultSetIntrepreter.Services.DTOs;
+namespace ResultSetInterpreter.Models.DTOs.InsertStatementToCSharp;
 
 public class ParseInsertStatementToCSharpRequest
 {

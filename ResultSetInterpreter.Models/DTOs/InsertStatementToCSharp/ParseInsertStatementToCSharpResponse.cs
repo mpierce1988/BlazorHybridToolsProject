@@ -1,4 +1,6 @@
-namespace ResultSetIntrepreter.Services.DTOs;
+using ResultSetIntrepreter.Services.DTOs;
+
+namespace ResultSetInterpreter.Models.DTOs.InsertStatementToCSharp;
 
 public class ParseInsertStatementToCSharpResponse : BaseResponse
 {
