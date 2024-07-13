@@ -6,6 +6,17 @@ namespace ResultSetInterpreter.Services.EpPlus;
 
 public class EpPlusExcelWorkbookParser : IExcelWorkbookParser
 {
+    #region Public Methods
+    
+    /// <summary>
+    /// Parses an Excel file into a Workbook object
+    /// </summary>
+    /// <param name="stream">
+    /// The stream of the Excel file to parse
+    /// </param>
+    /// <returns>
+    /// The parsed Workbook object
+    /// </returns>
     public async Task<Workbook> ParseExcel(Stream stream)
     {
         Workbook workbook = new();
@@ -17,31 +28,52 @@ public class EpPlusExcelWorkbookParser : IExcelWorkbookParser
         foreach (var worksheet in package.Workbook.Worksheets)
         {
             // Ensure the worksheet is not empty
-            if (worksheet.Dimension.Columns == null && worksheet.Dimension.Rows == null)
+            if (worksheet.Dimension.Columns == 0 && worksheet.Dimension.Rows == 0)
             {
                 continue;
             }
             
-            Sheet sheet = new()
-            {
-                Name = worksheet.Name
-            };
-            
-            object[,] cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
-            
-            for (int i = 1; i <= worksheet.Dimension.Rows; i++)
-            {
-                for (int j = 1; j <= worksheet.Dimension.Columns; j++)
-                {
-                    cells[i - 1, j - 1] = worksheet.Cells[i, j].Value;
-                }
-            }
+            var sheet = GetSheetFromWorksheet(worksheet);
 
-            sheet.Cells = cells;
-            
             workbook.Sheets.Add(sheet);
         }
         
         return workbook;
     }
+    
+    #endregion
+    
+    #region Private Methods
+
+    /// <summary>
+    /// Converts an EpPlus ExcelWorksheet to a Sheet object
+    /// </summary>
+    /// <param name="worksheet">
+    /// The worksheet to convert
+    /// </param>
+    /// <returns>
+    /// The converted Sheet object
+    /// </returns>
+    private Sheet GetSheetFromWorksheet(ExcelWorksheet worksheet)
+    {
+        Sheet sheet = new()
+        {
+            Name = worksheet.Name
+        };
+            
+        object[,] cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
+            
+        for (int i = 1; i <= worksheet.Dimension.Rows; i++)
+        {
+            for (int j = 1; j <= worksheet.Dimension.Columns; j++)
+            {
+                cells[i - 1, j - 1] = worksheet.Cells[i, j].Value;
+            }
+        }
+
+        sheet.Cells = cells;
+        return sheet;
+    }
+    
+    #endregion
 }

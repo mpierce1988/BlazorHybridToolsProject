@@ -30,7 +30,6 @@ public class ExcelComparisonService : IExcelComparisonService
 
             // Validate the workbooks have the same number of sheets
             EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
-
             
             // Compare the control and test workbooks
             for (int i = 0; i < controlWorkbook.Sheets.Count; i++)
