@@ -61,17 +61,18 @@ public class EpPlusExcelWorkbookParser : IExcelWorkbookParser
             Name = worksheet.Name
         };
             
-        object[,] cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
+        // object[,] cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
+        sheet.Cells = new object[worksheet.Dimension.Rows, worksheet.Dimension.Columns];
             
         for (int i = 1; i <= worksheet.Dimension.Rows; i++)
         {
             for (int j = 1; j <= worksheet.Dimension.Columns; j++)
             {
-                cells[i - 1, j - 1] = worksheet.Cells[i, j].Value;
+                sheet.Cells[i - 1, j - 1] = worksheet.Cells[i, j].Value;
             }
         }
 
-        sheet.Cells = cells;
+        //sheet.Cells = cells;
         return sheet;
     }
     

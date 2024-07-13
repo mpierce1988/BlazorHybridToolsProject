@@ -7,8 +7,14 @@ namespace ResultSetIntrepreter.Services;
 
 public class ObjectParserService : IObjectParserService
 {
+    #region Fields
+    
     private readonly IStringToObjectDefinitionParser _stringToObjectDefinitionParser;
     private readonly IObjectDefinitionPrinter _objectDefinitionPrinter;
+    
+    #endregion
+    
+    #region Constructors
     
     public ObjectParserService(IStringToObjectDefinitionParser stringToObjectDefinitionParser, IObjectDefinitionPrinter objectDefinitionPrinter)
     {
@@ -16,6 +22,13 @@ public class ObjectParserService : IObjectParserService
         _objectDefinitionPrinter = objectDefinitionPrinter;
     }
     
+    #endregion
+    
+    #region Public Methods
+    
+    /// <summary>Parses an INSERT statement into C# code</summary>
+    /// <param name="request">The request containing the INSERT statement to parse</param>
+    /// <returns>The response containing the C# code</returns>
     public async Task<ParseInsertStatementToCSharpResponse> ParseInsertStatementToCSharpAsync(ParseInsertStatementToCSharpRequest request)
     {
         ParseInsertStatementToCSharpResponse result = new();
@@ -28,10 +41,10 @@ public class ObjectParserService : IObjectParserService
             switch (request.PrintType)
             {
                 case ObjectDefinitionPrintType.ClassDefinition:
-                    result.CSharpCode = await _objectDefinitionPrinter.ClassDefinitionToCSharpCodeAsync(definition);
+                    result.CSharpCode = await _objectDefinitionPrinter.ClassDefinitionToCodeAsync(definition);
                     break;
                 case ObjectDefinitionPrintType.Data:
-                    result.CSharpCode = await _objectDefinitionPrinter.DataToCSharpListCodeAsync(definition);
+                    result.CSharpCode = await _objectDefinitionPrinter.ObjectsToListCodeAsync(definition);
                     break;
                 case ObjectDefinitionPrintType.ClassDefinitionAndData:
                 default:
@@ -46,4 +59,6 @@ public class ObjectParserService : IObjectParserService
 
         return result;
     }
+    
+    #endregion
 }

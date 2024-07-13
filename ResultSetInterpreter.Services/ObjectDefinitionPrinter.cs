@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Specialized;
 using System.Text;
 using ResultSetInterpreter.Models.ObjectDefinition;
 using ResultSetIntrepreter.Services.Interfaces;
@@ -8,7 +7,26 @@ namespace ResultSetIntrepreter.Services;
 
 public class ObjectDefinitionPrinter : IObjectDefinitionPrinter
 {
-    public async Task<string> ClassDefinitionToCSharpCodeAsync(ObjectDefinition definition)
+    #region Public Methods
+    
+    /// <summary>Converts an ObjectDefinition to C# code</summary>
+    /// <param name="definition">The ObjectDefinition to convert to C# code</param>
+    /// <returns>The C# code representing the ObjectDefinition</returns>
+    public async Task<string> ObjectDefinitionToCSharpCode(ObjectDefinition definition)
+    {
+        StringBuilder sb = new();
+
+        sb.AppendLine(await ClassDefinitionToCodeAsync(definition));
+        sb.AppendLine();
+        sb.Append(await ObjectsToListCodeAsync(definition));
+        
+        return sb.ToString();
+    }
+    
+    /// <summary>Converts an ObjectDefinition to a class definition in C# code</summary>
+    /// <param name="definition">The ObjectDefinition to convert to a class definition</param>
+    /// <returns>The class definition in C# code</returns>
+    public async Task<string> ClassDefinitionToCodeAsync(ObjectDefinition definition)
     {
         StringBuilder sb = new();
 
@@ -17,19 +35,27 @@ public class ObjectDefinitionPrinter : IObjectDefinitionPrinter
             // Create Class Definition
             sb.AppendLine($"public class {definition.Name} {{");
             // Create Property Declarations
-            for (int i = 0; i < definition.Properties.Count; i++)
+            foreach (Property property in definition.Properties)
             {
-                sb.AppendLine($"public {definition.Properties[i].Type!.Name} {definition.Properties[i].Name} " +
+                sb.AppendLine($"public {property.Type!.Name} {property.Name} " +
                               "{ get; set; }");
             }
-//
+            // Close Class Definition
             sb.Append('}');
         });
         
         return sb.ToString();
     }
 
-    public async Task<string> DataToCSharpListCodeAsync(ObjectDefinition definition)
+    /// <summary>Converts a list of objects to a list of object initializers in C# code</summary>
+    /// <param name="definition">
+    /// The object definition containing the objects to convert to a list of object initializers
+    /// </param>
+    /// <returns>The list of object initializers in C# code</returns>
+    /// <exception cref="InvalidCastException">
+    /// Thrown when the key is not a Property or the value is not a string
+    /// </exception>
+    public async Task<string> ObjectsToListCodeAsync(ObjectDefinition definition)
     {
         StringBuilder sb = new();
 
@@ -47,31 +73,20 @@ public class ObjectDefinitionPrinter : IObjectDefinitionPrinter
 
                 for (int j = 0; j < objectForClass.Count; j++)
                 {
-                    Property key = objectForClass.Cast<DictionaryEntry>().ElementAt(j).Key as Property;
-                    string? value = objectForClass.Cast<DictionaryEntry>().ElementAt(j).Value as string;
+                    Property key = objectForClass.Cast<DictionaryEntry>().ElementAt(j).Key as Property 
+                                   ?? throw new InvalidCastException("Key is not a Property");
+                    string value = objectForClass.Cast<DictionaryEntry>().ElementAt(j).Value as string 
+                                   ?? throw new InvalidCastException("Value is not a string");
+                    
+                    bool isLastProperty = j == objectForClass.Count - 1;
+                    string propertyInitializerString = GetPropertyInitializerString(value, key, isLastProperty);
 
-                    string displayValue = GetDisplayValueByProperty(key, value);
-
-                    if (j != objectForClass.Count - 1)
-                    {
-                        sb.AppendLine($"{key.Name} = {displayValue},");
-                    }
-                    else
-                    {
-                        sb.AppendLine($"{key.Name} = {displayValue}");
-                    }
+                    sb.AppendLine(propertyInitializerString);
                 }
                 
 
                 // Close object initializer, adding a comma unless it's the last object
-                if (i != definition.Objects.Count - 1)
-                {
-                    sb.AppendLine("},");
-                }
-                else
-                {
-                    sb.AppendLine("}");
-                }
+                sb.AppendLine(i != definition.Objects.Count - 1 ? "}," : "}");
             }
             
             // Close list declaration
@@ -79,37 +94,45 @@ public class ObjectDefinitionPrinter : IObjectDefinitionPrinter
         });
         
         return sb.ToString();
-        
     }
+    
+    #endregion
+    
+    #region Private Methods
 
-    private string GetDisplayValueByProperty(Property? key, string? value)
+    /// <summary>
+    /// Gets the property initializer string for the object initializer code block 
+    /// </summary>
+    /// <param name="value">The value of the property</param>
+    /// <param name="key">The property key</param>
+    /// <param name="isLastProperty">Whether or not the property is the last property in the object initializer</param>
+    /// <returns>The property initializer string</returns>
+    private string GetPropertyInitializerString(string value, Property key, bool isLastProperty)
     {
-        string result = value ?? "null";
+        string displayValue = value;
 
-        if (key?.Type == typeof(string))
+        if (key.Type == typeof(string))
         {
-            result = $"\"{value}\"";
+            displayValue = $"\"{value}\"";
         }
-        else if (key?.Type == typeof(DateTime))
+        else if (key.Type == typeof(DateTime))
         {
-            result = $"DateTime.Parse(\"{value}\")";
+            displayValue = $"DateTime.Parse(\"{value}\")";
         }
-        else if (key?.Type == typeof(int))
+        else if (key.Type == typeof(int))
         {
-            result = $"{value}";
+            displayValue = $"{value}";
         }
         
-        return result;
-    }
-
-    public async Task<string> ObjectDefinitionToCSharpCode(ObjectDefinition definition)
-    {
-        StringBuilder sb = new();
-
-        sb.AppendLine(await ClassDefinitionToCSharpCodeAsync(definition));
-        sb.AppendLine();
-        sb.Append(await DataToCSharpListCodeAsync(definition));
+        string propertyInitializer = $"{key.Name} = {displayValue}";
         
-        return sb.ToString();
+        if (!isLastProperty)
+        {
+            propertyInitializer += ",";
+        }
+        
+        return propertyInitializer;
     }
+    
+    #endregion
 }

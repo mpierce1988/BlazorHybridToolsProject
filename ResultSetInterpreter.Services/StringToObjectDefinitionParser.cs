@@ -87,10 +87,8 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
 
         // Get the columns to determine the order of the values
         string columnsText = insertMatch.Groups["columns"].Value.Trim();
-        // split the columns text by comma
-        string[] columns = columnsText.Split(',');
         
-        var orderedProperties = GetOrderedProperties(columns, result);
+        var orderedProperties = GetOrderedProperties(columnsText, result);
 
         // Get the values string
         string valuesString = insertMatch.Groups["values"].Value.Trim();
@@ -101,30 +99,13 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         // Loop through each item
         foreach (string item in items)
         {
-            // Create a dictionary to hold the property and the value
-            OrderedDictionary propertyValues = new();
-
             // Split the values by comma
             string[] values = item.Split(',');
 
-            // Loop through each ordered property, and grab the corresponding value
-            for (int i = 0; i < orderedProperties.Count; i++)
-            {
-                string value = values[i].Trim();
-                
-                if(string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Value cannot be empty");
-                
-                Property prop = orderedProperties[i];
-
-                value = GetTrimmedValue(value, prop);
-                
-                propertyValues.Add(prop, value);
-            }
-
-            result.Objects.Add(propertyValues);
+            result.Objects.Add(GetOrderedObjectDefinitions(values, orderedProperties));
         }
     }
-
+    
     /// <summary>
     /// Takes a string of the table definition and a result ObjectDefinition and populates the Name and Properties
     /// </summary>
@@ -191,7 +172,7 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
     /// Takes a string of column names and a result ObjectDefinition (containing Properties) and returns
     /// a List of Properties in the order they appear in the columns string
     /// </summary>
-    /// <param name="columns">
+    /// <param name="columnsText">
     /// The string of column names
     /// </param>
     /// <param name="result">
@@ -203,8 +184,11 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
     /// <exception cref="ArgumentException">
     /// Thrown if the column name in the insert statement does not appear as a Property in the ObjectDefinition
     /// </exception>
-    private List<Property> GetOrderedProperties(string[] columns, ObjectDefinition result)
+    private List<Property> GetOrderedProperties(string columnsText, ObjectDefinition result)
     {
+        // split the columns text by comma
+        string[] columns = columnsText.Split(',');
+        
         // Create a List to hold the columns in order
         List<Property> orderedProperties = new();
 
@@ -377,6 +361,36 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         }
 
         return result;
+    }
+    
+    /// <summary>
+    /// Takes an array of values and a List of Properties and returns an OrderedDictionary of the values and Properties 
+    /// </summary>
+    /// <param name="values">The array of values</param>
+    /// <param name="orderedProperties">The List of Properties</param>
+    /// <returns>OrderedDictionary of the values and Properties</returns>
+    /// <exception cref="ArgumentException">Thrown if the value is null or whitespace</exception>
+    private OrderedDictionary GetOrderedObjectDefinitions(string[] values, List<Property> orderedProperties)
+    {
+        // Create a dictionary to hold the property and the value
+        OrderedDictionary propertyValues = new();
+
+        // Loop through each ordered property, and grab the corresponding value
+        for (int i = 0; i < orderedProperties.Count; i++)
+        {
+            // Get the value and trim it, throwing an error if the result is null or whitespace
+            string value = !string.IsNullOrWhiteSpace(values[i].Trim()) 
+                ? values[i].Trim() 
+                : throw new ArgumentException("Value cannot be empty");
+                
+            Property prop = orderedProperties[i];
+
+            value = GetTrimmedValue(value, prop);
+                
+            propertyValues.Add(prop, value);
+        }
+        
+        return propertyValues;
     }
     
     #endregion

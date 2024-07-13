@@ -26,7 +26,7 @@ public class ObjectDefinitionPrinterUnitTests
         string expectedResult = $"public class {className}";
 
         // Act
-        string result = await _printer.ClassDefinitionToCSharpCodeAsync(definition);
+        string result = await _printer.ClassDefinitionToCodeAsync(definition);
         
         // Assert
         Assert.Contains(expectedResult, result);
@@ -58,7 +58,7 @@ public class ObjectDefinitionPrinterUnitTests
                                 "}";
         
         // Act
-        string result = await _printer.ClassDefinitionToCSharpCodeAsync(definition);
+        string result = await _printer.ClassDefinitionToCodeAsync(definition);
         
         // Assert
         Assert.Equal(expectedResult, result);
@@ -112,7 +112,7 @@ public class ObjectDefinitionPrinterUnitTests
                                 "}";
         
         // Act
-        string result = await _printer.ClassDefinitionToCSharpCodeAsync(definition);
+        string result = await _printer.ClassDefinitionToCodeAsync(definition);
         
         
         // Assert
@@ -156,7 +156,7 @@ public class ObjectDefinitionPrinterUnitTests
                                 "};";
         
         // Act
-        string result = await _printer.DataToCSharpListCodeAsync(definition);
+        string result = await _printer.ObjectsToListCodeAsync(definition);
         
         // Assert
         Assert.Contains(expectedResult, result);
@@ -226,7 +226,7 @@ public class ObjectDefinitionPrinterUnitTests
                                 "};";
         
         // Act
-        string result = await _printer.DataToCSharpListCodeAsync(definition);
+        string result = await _printer.ObjectsToListCodeAsync(definition);
         
         // Assert
         Assert.Contains(expectedResult, result);
@@ -269,7 +269,7 @@ public class ObjectDefinitionPrinterUnitTests
                                 "};";
         
         // Act
-        string result = await _printer.DataToCSharpListCodeAsync(definition);
+        string result = await _printer.ObjectsToListCodeAsync(definition);
         
         // Assert
         Assert.Contains(expectedResult, result);

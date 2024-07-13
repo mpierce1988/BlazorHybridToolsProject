@@ -7,6 +7,15 @@ namespace ResultSetIntrepreter.Services;
 
 public class BenchmarkService : IBenchmarkService
 {
+    #region Public Methods
+    
+    /// <summary>Runs a benchmark on the provided method</summary>
+    /// <param name="benchmarkRequest">The benchmark request object containing the method to benchmark and the
+    /// number of iterations to run</param>
+    /// <returns>The benchmark result object containing the execution times and other statistics</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the method is null or the number of iterations is less than or equal to 0
+    /// </exception>
     public async Task<BenchmarkResult> RunBenchmarkAsync(BenchmarkRequest benchmarkRequest)
     {
         // Validate a method was provided
@@ -32,12 +41,8 @@ public class BenchmarkService : IBenchmarkService
 
         for (int i = 0; i < benchmarkRequest.Iterations; i++)
         {
-            stopwatch.Restart();
-            await benchmarkRequest.Method();
-            stopwatch.Stop();
-            
-            result.ExecutionTimes.Add(stopwatch.Elapsed.TotalMilliseconds);
-            
+            result.ExecutionTimes.Add(await RunIteration(benchmarkRequest.Method, stopwatch));
+
             // if a progress object was provided, report progress
             benchmarkRequest.Progress?.Report((i + 1.0f)/ benchmarkRequest.Iterations);
         }
@@ -47,4 +52,23 @@ public class BenchmarkService : IBenchmarkService
         
         return result;
     }
+    
+    #endregion
+    
+    #region Private Methods
+
+    /// <summary>Runs a single iteration of the benchmark</summary>
+    /// <param name="methodToTest">The benchmark request object containing the method to benchmark</param>
+    /// <param name="stopwatch">The stopwatch object to use for timing the method</param>
+    /// <returns>The execution time of the method</returns> 
+    private async Task<double> RunIteration(Func<Task>? methodToTest, Stopwatch stopwatch)
+    {
+        stopwatch.Restart();
+        await methodToTest!(); // Method has already been validated
+        stopwatch.Stop();
+        
+        return stopwatch.Elapsed.TotalMilliseconds;
+    }
+    
+    #endregion
 }
