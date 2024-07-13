@@ -392,20 +392,18 @@ VALUES
     public async Task ParseInsertStatement_TableWithDataNoSpaces_ReturnsCorrectResult()
     {
         // Arrange
-        string createTableStatement = """
-                                      -- Create temporary table
-                                      CREATE TABLE #TempTable (
-                                          [ID] INT,
-                                          [Name] NVARCHAR(50),
-                                          [Age] INT
-                                      );
+        string createTableStatement = @"-- Create temporary table
+CREATE TABLE #TempTable (
+    [ID] INT,
+    [Name] NVARCHAR(50),
+    [Age] INT
+);
 
-                                      -- Insert statement
-                                      INSERT INTO #TempTable ([ID], [Name], [Age])
-                                      VALUES
-                                          (1, N'John Doe', 30),
-                                          (2, N'Jane Smith', 25);
-                                      """;
+-- Insert statement
+INSERT INTO #TempTable ([ID], [Name], [Age])
+VALUES
+    (1, 'John Doe', 30),
+    (2, 'Jane Smith', 25);";
         Property idProperty = new Property
         {
             Name = "ID",

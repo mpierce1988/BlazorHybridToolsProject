@@ -11,6 +11,18 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
     {
         ObjectDefinition result = new();
         
+        // split insert statement into table definition and insert statement
+        string[] statements = insertStatement.Split("INSERT INTO");
+
+        if (statements.Count() > 2)
+        {
+            throw new ArgumentException(
+                "Insert Statement contains multiple Table and/or Insert definitions. Only one is allowed");
+        }
+
+        string tableDefinition = statements[0];
+        string? insertDataStatement = statements.Count() > 1 ? string.Concat("INSERT INTO", statements[1]) : null;
+        
         // Remove new line or return characters from the insert statement
         // insertStatement = insertStatement.Replace("\n", " ").Replace("\r", " ");
 
@@ -18,9 +30,9 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         //string tableCreateMatchRegex = @"CREATE TABLE #(?<tableName>\w+)\s*\((?<columns>.+?)\);";
         RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Multiline;
 
-        Regex tableCreateRegex = new Regex(@"CREATE TABLE #(?<tableName>\w+)\s*\(\s?(?<columns>.+)\);?", options);
+        Regex tableCreateRegex = new Regex(@"^CREATE TABLE #(?<tableName>\w+)\s*\(\s?(?<columns>[\s\S]*?)\);?$", options);
         
-        Match tableCreateMatch = tableCreateRegex.Match(insertStatement);
+        Match tableCreateMatch = tableCreateRegex.Match(tableDefinition);
         
         if(tableCreateMatch.Success)
         {
@@ -35,64 +47,71 @@ public class StringToObjectDefinitionParser : IStringToObjectDefinitionParser
         }
         
         // Get the Insert statement
-        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\s?\n?VALUES\s?\n?\((?<values>[\s\S]+)\);?", options);
-        Match insertMatch = insertRegex.Match(insertStatement);
+        Regex insertRegex = new Regex(@$"INSERT INTO #{result.Name}\s\((?<columns>.+?)\)\s?\n?VALUES\s*?\((?<values>[\s\S]+)\);?", options);
 
-        if (insertMatch.Success)
+        if (insertDataStatement is not null)
         {
-            // Get the columns to determine the order of the values
-            string columnsText = insertMatch.Groups["columns"].Value.Trim();
-            // split the columns text by comma
-            string[] columns = columnsText.Split(',');
-            // Create a List to hold the columns in order
-            List<Property> orderedProperties = new();
+           Match insertMatch = insertRegex.Match(insertDataStatement);
 
-            for (int i = 0; i < columns.Length; i++)
+            if (insertMatch.Success)
             {
-                string columnName = columns[i].Trim();
-                // Remove the square brackets, if they are present
-                columnName = columnName.Trim('[', ']');
-                Property? property = result.Properties.FirstOrDefault(prop => prop.Name == columnName);
+                // Get the columns to determine the order of the values
+                string columnsText = insertMatch.Groups["columns"].Value.Trim();
+                // split the columns text by comma
+                string[] columns = columnsText.Split(',');
+                // Create a List to hold the columns in order
+                List<Property> orderedProperties = new();
 
-                if (property == null)
+                for (int i = 0; i < columns.Length; i++)
                 {
-                    throw new ArgumentException(
-                        "Insert statement contains a column not declared in the table create statement");
+                    string columnName = columns[i].Trim();
+                    // Remove the square brackets, if they are present
+                    columnName = columnName.Trim('[', ']');
+                    Property? property = result.Properties.FirstOrDefault(prop => prop.Name == columnName);
+
+                    if (property == null)
+                    {
+                        throw new ArgumentException(
+                            "Insert statement contains a column not declared in the table create statement");
+                    }
+                    
+                    orderedProperties.Add(property);
                 }
                 
-                orderedProperties.Add(property);
-            }
-            
-            // Get the values string
-            string valuesString = insertMatch.Groups["values"].Value.Trim();
-            
-            // remove new line and return characters
-            valuesString = valuesString.Replace("\n", " ").Replace("\r", " ");
-            
-            // Split the values by "), (" to get each item
-            string[] items = valuesString.Split("), (");
-            
-            // Loop through each item
-            foreach (string item in items)
-            {
-                // Create a dictionary to hold the property and the value
-                OrderedDictionary propertyValues = new();
+                // Get the values string
+                string valuesString = insertMatch.Groups["values"].Value.Trim();
                 
-                // Split the values by comma
-                string[] values = item.Split(',');
-            
-                // Loop through each ordered property, and grab the corresponding value
-                for (int i = 0; i < orderedProperties.Count; i++)
+                // remove new line and return characters
+                valuesString = valuesString.Replace("\n", " ").Replace("\r", " ");
+                
+                // Split the values by "), (" to get each item
+                string[] items = valuesString.Split("),");
+                
+                // Loop through each item
+                foreach (string item in items)
                 {
-                    Property prop = orderedProperties[i];
-                    string? value = values[i].Trim();
-                    // Remove leading and trailing apostrophes
-                    value = value.Trim('\'');
-                    propertyValues.Add(prop, value);
+                    // Create a dictionary to hold the property and the value
+                    OrderedDictionary propertyValues = new();
+                    
+                    // Split the values by comma
+                    string[] values = item.Split(',');
+                
+                    // Loop through each ordered property, and grab the corresponding value
+                    for (int i = 0; i < orderedProperties.Count; i++)
+                    {
+                        Property prop = orderedProperties[i];
+                        string? value = values[i].Trim();
+                        // Remove leading and trailing apostrophes
+                        value = value.Trim('\'');
+                        value = value.Trim('(');
+                        value = value.Trim(')');
+                        propertyValues.Add(prop, value);
+                    }
+                
+                    result.Objects.Add(propertyValues);
                 }
-            
-                result.Objects.Add(propertyValues);
             }
+        
         }
         
         return result;
