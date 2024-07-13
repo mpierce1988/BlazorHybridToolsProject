@@ -1,16 +1,17 @@
 using ResultSetInterpreter.Models.Workbook;
-using ResultSetInterpreter.Services.EpPlus;
+using ResultSetInterpreter.Services.Test.Utilities;
+using ResultSetIntrepreter.Services;
 
-namespace ResultSetInterpreter.Services.Test;
+namespace ResultSetInterpreter.Services.EpPlus.Test;
 
-public class ExcelWorkbookParserUnitTests
+public class EpPlusExcelWorkbookParserUnitTests
 {
     private readonly IExcelWorkbookParser _workbookParser;
 
     private const string TwoColumnsTwoRowsFileName = "TwoColumnsTwoRows.xlsx";
     private const string UserTracking = "User_Tracking.xlsx";
 
-    public ExcelWorkbookParserUnitTests()
+    public EpPlusExcelWorkbookParserUnitTests()
     {
         _workbookParser = new EpPlusExcelWorkbookParser();
     }

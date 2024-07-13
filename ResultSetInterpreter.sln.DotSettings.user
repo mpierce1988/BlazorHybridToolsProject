@@ -30,6 +30,7 @@
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelComparisonServiceUnitTests&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelWorkbookParserUnitTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::202242A3-2E86-4911-BC20-A4E4F0066093::net8.0::ResultSetInterpreter.Services.EpPlus.Test.EpPlusExcelWorkbookParserUnitTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

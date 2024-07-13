@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Web", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResultSetInterpreter.Services.EpPlus", "ResultSetInterpreter.Services.EpPlus\ResultSetInterpreter.Services.EpPlus.csproj", "{3053B806-4E1F-499C-9AED-4238711D60A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResultSetInterpreter.Services.EpPlus.Test", "ResultSetInterpreter.Services.EpPlus.Test\ResultSetInterpreter.Services.EpPlus.Test.csproj", "{202242A3-2E86-4911-BC20-A4E4F0066093}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3053B806-4E1F-499C-9AED-4238711D60A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{202242A3-2E86-4911-BC20-A4E4F0066093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{202242A3-2E86-4911-BC20-A4E4F0066093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{202242A3-2E86-4911-BC20-A4E4F0066093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{202242A3-2E86-4911-BC20-A4E4F0066093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
