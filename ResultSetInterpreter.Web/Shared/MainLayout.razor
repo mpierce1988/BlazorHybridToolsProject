@@ -1,19 +1,42 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>ResultSetInterpreter.Web</PageTitle>
+<MudThemeProvider IsDarkMode="@_isDarkMode"/>
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(() => DrawerToggle())" />
+        <MudSpacer />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">Tosche Station</MudText>
+        </MudDrawerHeader>
+        <NavMenu IsDarkMode="@_isDarkMode" OnToggleDarkMode="OnToggleChanged"/>
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer Fixed="true">
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool _drawerOpen = true;
+    bool _isDarkMode = true;
+    
+
+    private void OnToggleChanged(bool toggled)
+    {
+        // Because variable is not two-way bound, we need to update it manually
+        _isDarkMode = toggled;
+        // Need to trigger StateHasChanged to update the UI in all components
+        StateHasChanged();
+    }
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

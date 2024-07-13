@@ -1,0 +1,243 @@
+@page "/ExcelComparisonWeb"
+@using ResultSetInterpreter.Services.Interfaces
+@using ResultSetInterpreter.Models.DTOs.ExcelComparison
+@using ResultSetInterpreter.Components.Components
+<MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
+    <MudGrid Justify="Justify.Center">
+        <MudItem xs="12">
+            <MudText Typo="Typo.h3" Align="Align.Center">Excel Comparison Tool</MudText>
+        </MudItem>
+        @if (_isLoading)
+        {
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Info">Loading...</MudAlert>
+            </MudItem>
+        }
+        @if (_error != null)
+        {
+            <MudItem xs="12">
+                <MudAlert Severity="Severity.Error">@(_error)</MudAlert>
+            </MudItem>
+        }
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h6">Selected Control File: @(_controlFileName ?? "No File Selected")</MudText>
+            @if (_controlFile == null)
+            {
+                <!--
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="PickControlFile">Pick Control File</MudButton>
+                -->
+                <MudFileUpload T="IBrowserFile" FilesChanged="PickControlFile">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Filled" FullWidth="true" Color="Color.Secondary">
+                            Pick Control File
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+            }
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetControlFile">Reset Control File</MudButton>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudText Typo="Typo.h6">Selected Test File: @(_testFileName ?? "No File Selected")</MudText>
+            @if (_testFile == null)
+            {
+                <!--
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="PickTestFile">Pick Test File</MudButton>
+                -->
+                <MudFileUpload T="IBrowserFile" FilesChanged="PickTestFile">
+                    <ActivatorContent>
+                        <MudButton Variant="Variant.Filled" FullWidth="true" Color="Color.Secondary">
+                            Pick Test File
+                        </MudButton>
+                    </ActivatorContent>
+                </MudFileUpload>
+            }
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Info" OnClick="ResetTestFile">Reset Test File</MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton OnClick="CompareFiles" FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(_controlFile is null || _testFile is null)">
+                Compare Files
+            </MudButton>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.h5" Align="Align.Center">Results</MudText>
+            @if (_result == null)
+            {
+                <MudText Typo="Typo.body1" Align="Align.Center">No results, please run comparison</MudText>
+            }
+            else
+            {
+                @if (_result.IsIdentical)
+                {
+                    <MudText Typo="Typo.body1" Align="Align.Center">Excel files are identical!</MudText>
+                }
+                else
+                {
+                    <MudDataGrid Items="@_result.Results" SortMode="SortMode.None" Groupable="false">
+                        <Columns>
+                            <PropertyColumn Property="arg => arg.SheetName" Title="Sheet" />
+                            <PropertyColumn Property="arg => arg.ColumnLocation" Title="Column" />
+                            <PropertyColumn Property="arg => arg.RowLocation" Title="Row" />
+                            <PropertyColumn Property="arg => arg.ControlValue" Title="Control Value" />
+                            <PropertyColumn Property="arg => arg.TestValue" Title="Test Value"/>
+                        </Columns>
+                    </MudDataGrid>
+                }
+            }
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Secondary" OnClick="ResetAll">Reset All</MudButton>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+
+@code {
+    [Inject] private IExcelComparisonService ComparisonService { get; set; } = default!;
+    [Inject] private IDialogService DialogService { get; set; } = default!;
+
+    private Stream? _controlFile = null;
+    private string? _controlFileName = null;
+    private Stream? _testFile = null;
+    private string? _testFileName = null;
+
+    private ExcelComparisionResponse? _result = null;
+
+    private bool _isLoading;
+    private string? _error = null;
+
+    DialogOptions _dialogOptions = new DialogOptions()
+    {
+        CloseButton = true,
+        MaxWidth = MaxWidth.Small,
+    };
+
+    private async Task PickControlFile(IBrowserFile? file)
+    {
+        try
+        {
+            if (file is null) return;
+            
+            _isLoading = true;
+            _error = null;
+            ResetControlFile();
+
+            _controlFileName = file.Name;
+            _controlFile = file.OpenReadStream();
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while picking the control file: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
+            _isLoading = false;
+        }
+    }
+
+    private void ResetControlFile()
+    {
+        _controlFile = null;
+        _controlFileName = null;
+    }
+
+    private async Task PickTestFile(IBrowserFile? file)
+    {
+        try
+        {
+            if (file is null) return;
+            
+            _isLoading = true;
+            _error = null;
+            ResetTestFile();
+
+            _testFileName = file.Name;
+            _testFile = file.OpenReadStream();
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while picking the test file: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
+            _isLoading = false;
+        }
+    }
+
+    private void ResetTestFile()
+    {
+        _testFile = null;
+        _testFileName = null;
+    }
+
+    private async Task CompareFiles()
+    {
+        try
+        {
+            _isLoading = true;
+            _error = null;
+            _result = null;
+
+            if (_controlFile == null)
+            {
+                throw new Exception("Control file is required");
+            }
+            
+            if (_testFile == null)
+            {
+                throw new Exception("Test file is required");
+            }
+            
+            // Convert the files from BrowserFile to Stream
+            Stream controlFileStream = new MemoryStream();
+            await _controlFile.CopyToAsync(controlFileStream);
+            controlFileStream.Position = 0;
+            
+            Stream testFileStream = new MemoryStream();
+            await _testFile.CopyToAsync(testFileStream);
+            testFileStream.Position = 0;
+            
+            var response = await ComparisonService.CompareExcelFilesAsync(controlFileStream, testFileStream);
+
+            if (response.IsValid)
+            {
+                _result = response;
+            }
+            else
+            {
+                throw new Exception(response.Errors.FirstOrDefault()?.Message ?? "Unknown error occurred");
+            }
+            
+            _isLoading = false;
+        }
+        catch (Exception e)
+        {
+            var parameters = new DialogParameters<GenericDialog>
+            {
+                { x => x.ContentText, "An error occurred while comparing the files: " + e.Message },
+                { x => x.OkButtonColor, Color.Secondary}
+            };
+
+            await DialogService.ShowAsync<GenericDialog>("Error", parameters, _dialogOptions);
+            _isLoading = false;
+        }
+    }
+
+    private void ResetAll()
+    {
+        _error = null;
+        _result = null;
+        _isLoading = false;
+        ResetControlFile();
+        ResetTestFile();
+    }
+
+}
