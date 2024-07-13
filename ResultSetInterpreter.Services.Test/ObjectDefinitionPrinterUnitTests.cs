@@ -1,7 +1,5 @@
 using ResultSetInterpreter.Models.ObjectDefinition;
-using ResultSetIntrepreter.Services;
 using ResultSetIntrepreter.Services.Interfaces;
-using Xunit.Sdk;
 
 namespace ResultSetInterpreter.Services.Test;
 

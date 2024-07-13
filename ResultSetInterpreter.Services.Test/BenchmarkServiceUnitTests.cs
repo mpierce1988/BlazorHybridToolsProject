@@ -1,6 +1,4 @@
 using ResultSetInterpreter.Models.Benchmark;
-using ResultSetInterpreter.Services.Interfaces;
-using ResultSetIntrepreter.Services;
 
 namespace ResultSetInterpreter.Services.Test;
 

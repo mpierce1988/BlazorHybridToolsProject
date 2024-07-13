@@ -1,7 +1,5 @@
 using ResultSetInterpreter.Models.Workbook;
 using ResultSetInterpreter.Services.EpPlus;
-using ResultSetInterpreter.Services.Test.Utilities;
-using ResultSetIntrepreter.Services;
 
 namespace ResultSetInterpreter.Services.Test;
 

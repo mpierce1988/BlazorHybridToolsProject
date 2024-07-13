@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using ResultSetInterpreter.Models.ObjectDefinition;
-using ResultSetIntrepreter.Services;
 
 namespace ResultSetInterpreter.Services.Test;
 
@@ -247,7 +246,7 @@ VALUES
 	}
     
     [Fact]
-    public async Task ParseInsertStatement_TableWithDataBracketsSpaces_ReturnsCorrectResult()
+    public async Task ParseInsertStatement_TableWithOneRowDataBracketsSpaces_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = @"CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )
@@ -311,5 +310,153 @@ VALUES
         string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
         
         Assert.Equal(expectedJson, actualJson);
+    }
+
+    [Fact]
+    public async Task ParseInsertStatement_TableWithTwoRowsDataBracketsSpaces_ReturnsCorrectResult()
+    {
+        // Arrange
+        string createTableStatement = @"CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )
+
+INSERT INTO #temptable ( [SettingID], [Constant], [Description], [Value] )
+VALUES
+(1, 'Test', 'Test Description', 'Test Value'),
+(2, 'SecondTest', 'Second Description', 'Second Value');";
+        
+        Property settingIdProperty = new Property
+        {
+            Name = "SettingID",
+            Type = typeof(int)
+        };
+        
+        Property constantProperty = new Property
+        {
+            Name = "Constant",
+            Type = typeof(string)
+        };
+        
+        Property descriptionProperty = new Property
+        {
+            Name = "Description",
+            Type = typeof(string)
+        };
+        
+        Property valueProperty = new Property
+        {
+            Name = "Value",
+            Type = typeof(string)
+        };
+        
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "temptable",
+            Properties = new()
+            {
+                settingIdProperty,
+                constantProperty,
+                descriptionProperty,
+                valueProperty
+            },
+            Objects = new List<OrderedDictionary>()
+            {
+                new OrderedDictionary()
+                {
+                    {settingIdProperty, "1"},
+                    {constantProperty, "Test"},
+                    {descriptionProperty, "Test Description"},
+                    {valueProperty, "Test Value"}
+                },
+                new OrderedDictionary()
+                {
+                    {settingIdProperty, "2"},
+                    {constantProperty, "SecondTest"},
+                    {descriptionProperty, "Second Description"},
+                    {valueProperty, "Second Value"}
+                }
+            }
+        };
+
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+
+        // Assert
+        // Assert.Equivalent(expectedResult, actualResult);
+        string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
+        string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
+        
+        Assert.Equal(expectedJson, actualJson);
+        
+    }
+
+    [Fact]
+    public async Task ParseInsertStatement_TableWithDataNoSpaces_ReturnsCorrectResult()
+    {
+        // Arrange
+        string createTableStatement = """
+                                      -- Create temporary table
+                                      CREATE TABLE #TempTable (
+                                          [ID] INT,
+                                          [Name] NVARCHAR(50),
+                                          [Age] INT
+                                      );
+
+                                      -- Insert statement
+                                      INSERT INTO #TempTable ([ID], [Name], [Age])
+                                      VALUES
+                                          (1, N'John Doe', 30),
+                                          (2, N'Jane Smith', 25);
+                                      """;
+        Property idProperty = new Property
+        {
+            Name = "ID",
+            Type = typeof(int)
+        };
+        
+        Property nameProperty = new Property
+        {
+            Name = "Name",
+            Type = typeof(string)
+        };
+        
+        Property ageProperty = new Property
+        {
+            Name = "Age",
+            Type = typeof(int)
+        };
+        
+        ObjectDefinition expectedResult = new()
+        {
+            Name = "TempTable",
+            Properties = new()
+            {
+                idProperty,
+                nameProperty,
+                ageProperty
+            },
+            Objects = new List<OrderedDictionary>()
+            {
+                new OrderedDictionary()
+                {
+                    {idProperty, "1"},
+                    {nameProperty, "John Doe"},
+                    {ageProperty, "30"}
+                },
+                new OrderedDictionary()
+                {
+                    {idProperty, "2"},
+                    {nameProperty, "Jane Smith"},
+                    {ageProperty, "25"}
+                }
+            }
+        };
+        
+        // Act
+        ObjectDefinition actualResult = await _definitionParser.ParseInsertStatementAsync(createTableStatement);
+        
+        // Assert
+        string expectedResultJson = JsonConvert.SerializeObject(expectedResult);
+        string actualResultJson = JsonConvert.SerializeObject(actualResult);
+        
+        Assert.Equal(expectedResultJson, actualResultJson);
     }
 }

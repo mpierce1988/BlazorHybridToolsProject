@@ -32,6 +32,7 @@
     {
         // Because variable is not two-way bound, we need to update it manually
         _isDarkMode = toggled;
+        // Need to trigger StateHasChanged to update the UI in all components
         StateHasChanged();
     }
 

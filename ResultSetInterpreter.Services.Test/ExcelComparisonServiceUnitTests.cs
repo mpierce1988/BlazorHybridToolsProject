@@ -1,8 +1,4 @@
 using ResultSetInterpreter.Services.EpPlus;
-using ResultSetInterpreter.Services.Interfaces;
-using ResultSetInterpreter.Services.Test.Utilities;
-using ResultSetIntrepreter.Services;
-using ResultSetIntrepreter.Services.DTOs;
 
 namespace ResultSetInterpreter.Services.Test;
 
