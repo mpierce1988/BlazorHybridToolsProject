@@ -8,7 +8,7 @@ public class StringToObjectDefinitionParserUnitTests
     private readonly StringToObjectDefinitionParser _definitionParser = new();
 
     [Fact]
-    public async Task ParseInsertStatementAsync_CreateTableName_RetrieveCorrectName()
+    public void ParseInsertStatementAsync_CreateTableName_RetrieveCorrectName()
     {
         // Arrange
         string tableName = "TestTable";
@@ -21,7 +21,7 @@ public class StringToObjectDefinitionParserUnitTests
     }
 
     [Fact]
-    public async Task ParseInsertStatementAsync_CreateTableIntIDColumn_ReturnCorrectProperty()
+    public void ParseInsertStatementAsync_CreateTableIntIDColumn_ReturnCorrectProperty()
     {
         // Arrange
         string columnName = "Id";
@@ -33,7 +33,7 @@ public class StringToObjectDefinitionParserUnitTests
         ObjectDefinition definition =  _definitionParser.ParseInsertStatement(tempTableDeclaration);
         
         // Assert
-        Assert.Equal(1, definition.Properties.Count);
+        Assert.Single(definition.Properties);
         Assert.NotNull(definition.Properties.First());
         Assert.Equal(columnName, definition.Properties.First().Name);
         Assert.NotNull(definition.Properties.First().Type);
@@ -41,7 +41,7 @@ public class StringToObjectDefinitionParserUnitTests
     }
 
     [Fact]
-    public async Task ParseInsertStatementAsync_CreateTableNameNVarCharColumn_ReturnsCorrectProperties()
+    public void ParseInsertStatementAsync_CreateTableNameNVarCharColumn_ReturnsCorrectProperties()
     {
         // Arrange
         string columnName = "Name";
@@ -65,7 +65,7 @@ public class StringToObjectDefinitionParserUnitTests
     // TODO rest of data type tests
 
     [Fact]
-    public async Task ParseInsertStatementAsync_InsertOneRowOneColumn_ReturnsCorrectData()
+    public void ParseInsertStatementAsync_InsertOneRowOneColumn_ReturnsCorrectData()
     {
         // Arrange
         string columnName = "Id";
@@ -95,7 +95,7 @@ INSERT INTO #TestTable ({columnName}) VALUES ({testValue});";
     }
 
     [Fact]
-    public async Task ParseInsertStatementAsync_InsertOneRowTwoColumns_ReturnsCorrectData()
+    public void ParseInsertStatementAsync_InsertOneRowTwoColumns_ReturnsCorrectData()
     {
         // Arrange
         int numExpectedProperties = 2;
@@ -124,15 +124,25 @@ VALUES
         // Assert
         Assert.Equal(numExpectedProperties, definition.Properties.Count);
         Assert.Equal(numExpectedDataRows, definition.Objects.Count);
+        
+        // Check Id property
         Property idProperty = definition.Properties.First(prop => prop.Name == idColumnName);
+        Assert.NotNull(idProperty);
+        Assert.Equal(idCSharpDataType, idProperty.Type!.ToString());
+        // Check Id value in first row
         Assert.Equal(idValue, int.Parse(definition.Objects[0][idProperty]!.ToString() ?? ""));
+        
+        // Check Name property
         Property nameProperty = definition.Properties.First(prop => prop.Name == nameColumnName);
+        Assert.NotNull(nameProperty);
+        Assert.Equal(nameCSharpDataType, nameProperty.Type!.ToString());
+        // Check Name value in first row
         Assert.Equal(nameValue, definition.Objects[0][nameProperty]);
         
     }
 
     [Fact]
-    public async Task ParseInsertStatementAsync_ThreeColumnsThreeRows_ReturnsCorrectResult()
+    public void ParseInsertStatementAsync_ThreeColumnsThreeRows_ReturnsCorrectResult()
     {
         // Arrange
 
@@ -145,19 +155,19 @@ VALUES
 (2, 'JaneSmith', 'jane.smith@example.com'),
 (3, 'MikeBrown', 'mike.brown@example.com');";
 
-        Property UserIdProperty = new Property
+        Property userIdProperty = new Property
         {
             Name = "UserID",
             Type = typeof(int)
         };
 
-        Property UserNameProperty = new Property
+        Property userNameProperty = new Property
         {
             Name = "UserName",
             Type = typeof(string)
         };
 
-        Property UserEmailProperty = new Property
+        Property userEmailProperty = new Property
         {
             Name = "Email",
             Type = typeof(string)
@@ -168,29 +178,29 @@ VALUES
             Name = "Users",
             Properties = new()
             {
-                UserIdProperty,
-                UserNameProperty,
-                UserEmailProperty
+                userIdProperty,
+                userNameProperty,
+                userEmailProperty
             },
             Objects = new()
             {
                 new()
                 {
-                    {UserIdProperty, "1"},
-                    {UserNameProperty, "JohnDoe"},
-                    {UserEmailProperty, "john.doe@example.com"}
+                    {userIdProperty, "1"},
+                    {userNameProperty, "JohnDoe"},
+                    {userEmailProperty, "john.doe@example.com"}
                 },
                 new()
                 {
-                    {UserIdProperty, "2"},
-                    {UserNameProperty, "JaneSmith"},
-                    {UserEmailProperty, "jane.smith@example.com"}
+                    {userIdProperty, "2"},
+                    {userNameProperty, "JaneSmith"},
+                    {userEmailProperty, "jane.smith@example.com"}
                 },
                 new ()
                 {
-                    {UserIdProperty, "3"},
-                    {UserNameProperty, "MikeBrown"},
-                    {UserEmailProperty, "mike.brown@example.com"}
+                    {userIdProperty, "3"},
+                    {userNameProperty, "MikeBrown"},
+                    {userEmailProperty, "mike.brown@example.com"}
                 }
             }
         };
@@ -199,14 +209,13 @@ VALUES
         ObjectDefinition actualResult = _definitionParser.ParseInsertStatement(createAndInsertStatement);
         
         // Assert
-        string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
-        string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
+        string expectedJson = JsonConvert.SerializeObject(expectedResult);
+        string actualJson = JsonConvert.SerializeObject(actualResult);
         Assert.Equal(expectedJson, actualJson);
-        //Assert.Equivalent(expectedResult, actualResult);
     }
 
     [Fact]
-    public async Task ParseInsertStatement_TableDeclarationWithBracketsAndSpaces_ReturnsCorrectResult()
+    public void ParseInsertStatement_TableDeclarationWithBracketsAndSpaces_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = "CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )";
@@ -246,7 +255,7 @@ VALUES
 	}
     
     [Fact]
-    public async Task ParseInsertStatement_TableWithOneRowDataBracketsSpaces_ReturnsCorrectResult()
+    public void ParseInsertStatement_TableWithOneRowDataBracketsSpaces_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = @"CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )
@@ -306,14 +315,14 @@ VALUES
 
         // Assert
         // Assert.Equivalent(expectedResult, actualResult);
-        string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
-        string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
+        string expectedJson = JsonConvert.SerializeObject(expectedResult);
+        string actualJson = JsonConvert.SerializeObject(actualResult);
         
         Assert.Equal(expectedJson, actualJson);
     }
 
     [Fact]
-    public async Task ParseInsertStatement_TableWithTwoRowsDataBracketsSpaces_ReturnsCorrectResult()
+    public void ParseInsertStatement_TableWithTwoRowsDataBracketsSpaces_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = @"CREATE TABLE #temptable ( [SettingID] int, [Constant] nvarchar(50), [Description] nvarchar(1000), [Value] nvarchar(1000) )
@@ -381,15 +390,15 @@ VALUES
 
         // Assert
         // Assert.Equivalent(expectedResult, actualResult);
-        string expectedJson = Newtonsoft.Json.JsonConvert.SerializeObject(expectedResult);
-        string actualJson = Newtonsoft.Json.JsonConvert.SerializeObject(actualResult);
+        string expectedJson = JsonConvert.SerializeObject(expectedResult);
+        string actualJson = JsonConvert.SerializeObject(actualResult);
         
         Assert.Equal(expectedJson, actualJson);
         
     }
 
     [Fact]
-    public async Task ParseInsertStatement_TableWithDataNoSpaces_ReturnsCorrectResult()
+    public void ParseInsertStatement_TableWithDataNoSpaces_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = @"-- Create temporary table
@@ -459,7 +468,7 @@ VALUES
     }
     
     [Fact]
-    public async Task ParseInsertStatement_TableWithStringPrefixedByN_ReturnsCorrectResult()
+    public void ParseInsertStatement_TableWithStringPrefixedByN_ReturnsCorrectResult()
     {
         // Arrange
         string createTableStatement = @"-- Create temporary table
@@ -527,10 +536,4 @@ VALUES
         
         Assert.Equal(expectedResultJson, actualResultJson);
     }
-}
-
-public class TempTable {
-    public Int32 ID { get; set; }
-    public String Name { get; set; }
-    public Int32 Age { get; set; }
 }

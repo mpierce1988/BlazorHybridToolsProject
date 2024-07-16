@@ -8,15 +8,26 @@
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=970c54d1_002Da966_002D4fc6_002D9026_002Deec00a3f1ca1/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="UnitTest1" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.EPPlusExcelToCSharpServiceUnitTests.ConvertUserTrackingSample_SuccessfulResult&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.RunForNumberOfIterations_ShouldReturnSameNumberResults&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.InvalidNumberOfIterations_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.IterationsGreaterThan50_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.MethodNotProvided_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.EPPlusExcelCSharpWorkbookoParserUnitTests.ReceiveExcelStream_CorrectlyParsedResult&lt;/TestId&gt;
-    &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelComparisonServiceUnitTests&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Or&gt;
+    &lt;TestAncestor&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.EPPlusExcelToCSharpServiceUnitTests.ConvertUserTrackingSample_SuccessfulResult&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.RunForNumberOfIterations_ShouldReturnSameNumberResults&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.InvalidNumberOfIterations_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.IterationsGreaterThan50_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.BenchmarkServiceUnitTests.MethodNotProvided_ShouldThrowArgumentExceptionError&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.EPPlusExcelCSharpWorkbookoParserUnitTests.ReceiveExcelStream_CorrectlyParsedResult&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ExcelComparisonServiceUnitTests&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests.ParseInsertStatementAsync_CreateTableIntIDColumn_ReturnCorrectProperty&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests.ParseInsertStatementAsync_InsertOneRowTwoColumns_ReturnsCorrectData&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.StringToObjectDefinitionParserUnitTests&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectDefinitionPrinterUnitTests&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests.ObjectDefinitionToCSharpCode_WhenCalledWithClassDefinitionAndData_ReturnsCSharpCode&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests.ObjectDefinitionToCSharpCode_WhenCalledWithClassOnly_ReturnsClassOnly&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests.ObjectDefinitionToCSharpCode_WhenCalledWithDataOnly_ReturnsDataOnlyCode&lt;/TestId&gt;
+      &lt;TestId&gt;xUnit::9493E120-CCA8-46EB-B111-66DFC84B6C40::net8.0::ResultSetInterpreter.Services.Test.ObjectParserServiceUnitTests&lt;/TestId&gt;
+    &lt;/TestAncestor&gt;
+    &lt;ProjectFile&gt;202242A3-2E86-4911-BC20-A4E4F0066093/f:EpPlusExcelWorkbookParserUnitTests.cs&lt;/ProjectFile&gt;
+  &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=a36093d2_002Ddcb8_002D44ac_002Da448_002D3384e26be1aa/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="ParseInsertStatementAsync_InsertOneRowOneColumn_ReturnsCorrectData" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;

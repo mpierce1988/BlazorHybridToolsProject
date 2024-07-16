@@ -20,23 +20,26 @@ public class EpPlusExcelWorkbookParser : IExcelWorkbookParser
     public async Task<Workbook> ParseExcel(Stream stream)
     {
         Workbook workbook = new();
-        
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        
-        using var package = new ExcelPackage(stream);
-        
-        foreach (var worksheet in package.Workbook.Worksheets)
-        {
-            // Ensure the worksheet is not empty
-            if (worksheet.Dimension.Columns == 0 && worksheet.Dimension.Rows == 0)
-            {
-                continue;
-            }
-            
-            var sheet = GetSheetFromWorksheet(worksheet);
 
-            workbook.Sheets.Add(sheet);
-        }
+        await Task.Run(() =>
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        
+            using var package = new ExcelPackage(stream);
+        
+            foreach (var worksheet in package.Workbook.Worksheets)
+            {
+                // Ensure the worksheet is not empty
+                if (worksheet.Dimension.Columns == 0 && worksheet.Dimension.Rows == 0)
+                {
+                    continue;
+                }
+            
+                var sheet = GetSheetFromWorksheet(worksheet);
+
+                workbook.Sheets.Add(sheet);
+            }
+        });
         
         return workbook;
     }
