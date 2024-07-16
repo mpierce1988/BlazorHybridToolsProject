@@ -27,7 +27,7 @@ public class Program
         builder.Services.AddScoped<IExcelComparisonService, ExcelComparisonService>();
         builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
 
-        builder.Services.AddMudServices();
+        builder.Services.AddMudServices();        
         
         var app = builder.Build();
 
