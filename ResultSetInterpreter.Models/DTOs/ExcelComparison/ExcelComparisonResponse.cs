@@ -4,7 +4,7 @@ using ResultSetIntrepreter.Services.DTOs;
 
 namespace ResultSetInterpreter.Models.DTOs.ExcelComparison;
 
-public class ExcelComparisionResponse : BaseResponse
+public class ExcelComparisonResponse : BaseResponse
 {
     public List<ExcelComparisonValue> Results { get; set; } = new();
     public bool IsIdentical => Results.Count == 0;

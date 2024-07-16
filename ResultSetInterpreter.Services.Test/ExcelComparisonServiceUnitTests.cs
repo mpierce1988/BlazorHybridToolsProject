@@ -1,7 +1,6 @@
 using Moq;
 using ResultSetInterpreter.Models.DTOs.ExcelComparison;
 using ResultSetInterpreter.Models.Workbook;
-using ResultSetInterpreter.Services.EpPlus;
 
 namespace ResultSetInterpreter.Services.Test;
 
@@ -249,9 +248,14 @@ public class ExcelComparisonServiceUnitTests
         mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_controlWorkbook);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValueStream,
+            TestFile = testValueStream
+        };
         
         // Act
-        ExcelComparisionResponse response = await comparisonService.CompareExcelFilesAsync(controlValue, testValue);
+        ExcelComparisonResponse response = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.True(response.IsIdentical);
@@ -263,13 +267,20 @@ public class ExcelComparisonServiceUnitTests
         // Arrange
         await using var testValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         Stream testValueStream = testValue;
+
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = null,
+            TestFile = testValueStream
+        };
+        
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
         mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_controlWorkbook);
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(null!, testValueStream);
+        var result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Act and Assert
         Assert.False(result.IsValid);
@@ -283,13 +294,19 @@ public class ExcelComparisonServiceUnitTests
         // Avoid warning about Access to disposed closure by assigning to a variable
         Stream controlValueStream = controlValue;
         
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValueStream,
+            TestFile = null
+        };
+        
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
         mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(controlValueStream, null!);
+        var result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(result.IsValid);
@@ -301,20 +318,22 @@ public class ExcelComparisonServiceUnitTests
         // Arrange
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserTrackingOrder));
-        
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_extraSheet);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_extraSheet);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        ExcelComparisonResponse result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(result.IsValid);
@@ -327,19 +346,21 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserTrackings));
         
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_differentSheetName);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_differentSheetName);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        var result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(result.IsValid);
@@ -352,19 +373,21 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(UserIsConfirmedTrackingFileName));
         
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_additionalColumn);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_additionalColumn);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        var result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(result.IsValid);
@@ -377,19 +400,21 @@ public class ExcelComparisonServiceUnitTests
         await using Stream controlValue = File.OpenRead(TestUtility.GetSamplePath(ControlFileName));
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(ExtraUserTrackingFileName));
         
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_additionalRow);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_additionalRow);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        var result = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        var result = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(result.IsValid);
@@ -403,19 +428,21 @@ public class ExcelComparisonServiceUnitTests
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(FirstNameChangedFileName));
         int numberOfDifferences = 1;
         
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_userFirstNameDifferent);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_userFirstNameDifferent);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        ExcelComparisionResponse response = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        ExcelComparisonResponse response = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(response.IsIdentical);
@@ -430,19 +457,21 @@ public class ExcelComparisonServiceUnitTests
         await using Stream testValue = File.OpenRead(TestUtility.GetSamplePath(FirstNameOrderIdChangedFileName));
         int expectedNumberOfDifferences = 2;
         
-        // Save the streams to avoid warning about Access to disposed closure
-        Stream controlValueStream = controlValue;
-        Stream testValueStream = testValue;
+        ExcelComparisonRequest request = new()
+        {
+            ControlFile = controlValue,
+            TestFile = testValue
+        };
         
         // Set up moq
         var mockParser = new Mock<IExcelWorkbookParser>();
-        mockParser.Setup(p => p.ParseExcel(controlValueStream)).ReturnsAsync(_controlWorkbook);
-        mockParser.Setup(p => p.ParseExcel(testValueStream)).ReturnsAsync(_userFirstNameOrderIdDifferent);
+        mockParser.Setup(p => p.ParseExcel(request.ControlFile)).ReturnsAsync(_controlWorkbook);
+        mockParser.Setup(p => p.ParseExcel(request.TestFile)).ReturnsAsync(_userFirstNameOrderIdDifferent);
         
         ExcelComparisonService comparisonService = new ExcelComparisonService(mockParser.Object);
         
         // Act
-        ExcelComparisionResponse response = await comparisonService.CompareExcelFilesAsync(controlValueStream, testValueStream);
+        ExcelComparisonResponse response = await comparisonService.CompareExcelFilesAsync(request);
         
         // Assert
         Assert.False(response.IsIdentical);

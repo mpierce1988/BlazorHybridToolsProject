@@ -2,6 +2,7 @@
 @using ResultSetInterpreter.Services.Interfaces
 @using ResultSetInterpreter.Models.DTOs.ExcelComparison
 @using ResultSetInterpreter.Components.Components
+@using ResultSetIntrepreter.Services.Interfaces
 <MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12">
@@ -99,7 +100,7 @@
     private Stream? _testFile = null;
     private string? _testFileName = null;
 
-    private ExcelComparisionResponse? _result = null;
+    private ExcelComparisonResponse? _result = null;
 
     private bool _isLoading;
     private string? _error = null;
@@ -195,17 +196,19 @@
             {
                 throw new Exception("Test file is required");
             }
+
+            ExcelComparisonRequest request = new();
             
             // Convert the files from BrowserFile to Stream
-            Stream controlFileStream = new MemoryStream();
-            await _controlFile.CopyToAsync(controlFileStream);
-            controlFileStream.Position = 0;
+            request.ControlFile = new MemoryStream();
+            await _controlFile.CopyToAsync(request.ControlFile);
+            request.ControlFile.Position = 0;
             
-            Stream testFileStream = new MemoryStream();
-            await _testFile.CopyToAsync(testFileStream);
-            testFileStream.Position = 0;
+            request.TestFile = new MemoryStream();
+            await _testFile.CopyToAsync(request.TestFile);
+            request.TestFile.Position = 0;
             
-            var response = await ComparisonService.CompareExcelFilesAsync(controlFileStream, testFileStream);
+            ExcelComparisonResponse response = await ComparisonService.CompareExcelFilesAsync(request);
 
             if (response.IsValid)
             {

@@ -2,6 +2,7 @@ using ResultSetInterpreter.Models.DTOs.ExcelComparison;
 using ResultSetInterpreter.Models.Workbook;
 using ResultSetInterpreter.Services.Interfaces;
 using ResultSetIntrepreter.Services.DTOs;
+using ResultSetIntrepreter.Services.Interfaces;
 
 namespace ResultSetIntrepreter.Services;
 
@@ -25,27 +26,26 @@ public class ExcelComparisonService : IExcelComparisonService
     #region Public Methods
     
     /// <summary>Compares two Excel files and returns the differences</summary>
-    /// <param name="controlValue">The control Excel file</param>
-    /// <param name="testValue">The test Excel file</param>
+    /// <param name="request">The request containing the control and test files</param>
     /// <returns>The comparison result</returns>
     /// <exception cref="ArgumentException">
     /// Thrown when the control or test value is null or the control and test have different number of sheets
     /// or rows or columns
     /// </exception>
-    public async Task<ExcelComparisionResponse> CompareExcelFilesAsync(Stream controlValue, Stream testValue)
+    public async Task<ExcelComparisonResponse> CompareExcelFilesAsync(ExcelComparisonRequest request)
     {
         // Create a new ExcelComparisonResult
-        ExcelComparisionResponse response = new();
+        ExcelComparisonResponse response = new();
         
         try
         {
-            // Validate streams are not null
-            if (controlValue == null || testValue == null) 
-                throw new ArgumentException("Streams cannot be null");
+            // Validate using assignment to discard with null check
+            _ = request.ControlFile ?? throw new ArgumentException("Control file cannot be null");
+            _ = request.TestFile ?? throw new ArgumentException("Test file cannot be null");
 
             // Parse the control and test files
-            Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(controlValue);
-            Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(testValue);
+            Workbook controlWorkbook = await _excelWorkbookParser.ParseExcel(request.ControlFile);
+            Workbook testWorkbook = await _excelWorkbookParser.ParseExcel(request.TestFile);
 
             // Validate the workbooks have the same number of sheets
             EnsureWorkbooksAreSimilar(controlWorkbook, testWorkbook);
@@ -79,7 +79,7 @@ public class ExcelComparisonService : IExcelComparisonService
     /// <param name="workbookIndex">The index of the workbook</param>
     /// <param name="response">The response to add the comparison results to</param>
     private void CompareSheets(Sheet controlSheet, Sheet testSheet, int workbookIndex, 
-        ExcelComparisionResponse response)
+        ExcelComparisonResponse response)
     {
         if (controlSheet.Cells == null && testSheet.Cells == null)
         {
@@ -108,7 +108,7 @@ public class ExcelComparisonService : IExcelComparisonService
     /// <param name="columnIndex">The index of the column</param>
     /// <param name="response">The response to add the comparison result to</param>
     private void AddComparisonResultIfInvalid(Sheet testSheet, Sheet controlSheet, int sheetIndex, int rowIndex,
-        int columnIndex, ExcelComparisionResponse response)
+        int columnIndex, ExcelComparisonResponse response)
     {
         object? currentControlValue = controlSheet.Cells?[rowIndex, columnIndex];
         object? currentTestValue = testSheet.Cells![rowIndex, columnIndex];

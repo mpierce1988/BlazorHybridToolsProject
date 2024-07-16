@@ -4,6 +4,7 @@
 @using ResultSetIntrepreter.Services.DTOs
 @using ResultSetInterpreter.Components.Components
 @using ResultSetInterpreter.Models.DTOs.ExcelComparison
+@using ResultSetIntrepreter.Services.Interfaces
 
 <MudPaper Elevation="3" class="my-3 mx-3 py-5 px-3">
     <MudGrid Justify="Justify.Center">
@@ -85,7 +86,7 @@
     private Stream? _testFile = null;
     private string? _testFileName = null;
 
-    private ExcelComparisionResponse? _result = null;
+    private ExcelComparisonResponse? _result = null;
 
     private bool _isLoading;
     private string? _error = null;
@@ -175,8 +176,14 @@
             {
                 throw new Exception("Test file is required");
             }
+
+            ExcelComparisonRequest request = new ExcelComparisonRequest()
+            {
+                ControlFile = _controlFile,
+                TestFile = _testFile
+            };
             
-            var response = await ComparisonService.CompareExcelFilesAsync(_controlFile!, _testFile!);
+            ExcelComparisonResponse response = await ComparisonService.CompareExcelFilesAsync(request);
 
             if (response.IsValid)
             {
